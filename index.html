@@ -49,7 +49,8 @@
   #cara { font-size: 44px; width: 52px; text-align: center; }
   #medidor { width: 260px; height: 30px; background: #ddd; border-radius: 15px; overflow: hidden; position: relative; }
   #nivel { height: 100%; width: 0%; background: #66bb6a; border-radius: 15px; transition: background .2s; }
-  #medidor::after { content: ""; position: absolute; top: 0; bottom: 0; left: 65%; width: 4px; background: #e53935; }
+  #medidor::before { content: ""; position: absolute; top: 0; bottom: 0; left: 42%; right: 10%; background: repeating-linear-gradient(45deg, rgba(255,112,67,.18) 0 6px, transparent 6px 12px); }
+  #medidor::after { content: ""; position: absolute; top: 0; bottom: 0; left: 90%; width: 4px; background: #e53935; }
   #panel button { font: inherit; font-size: 18px; font-weight: bold; border: 0; border-radius: 20px; padding: 10px 16px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
   #btnMic { background: #4fc3f7; color: #fff; }
   #btnMic.on { background: #43a047; }
@@ -575,7 +576,10 @@ const escenaEl = $('escena');
 let escena = null, claveEscena = null, animales = [], decor = [], capas = [], amb = {};
 let ruido = 0, asustadosHasta = 0, calmaDesde = performance.now(), ignorarMicHasta = 0;
 let cam = 0, camObj = 0, ultimoRaton = -1e9, camDecor = 1e9;
-const MAX_ANIMALES = 7, UMBRAL_SUSTO = .65, UMBRAL_NERVIO = .35;
+// Ruido: a partir de NERVIO se ponen nerviosos; cada animal tiene su propio umbral (entre .42 y .85)
+// y huye cuando el ruido lo supera, así que se van de pocos en pocos. Con un GRITO huyen todos.
+const MAX_ANIMALES = 7, UMBRAL_NERVIO = .3, UMBRAL_GRITO = .9;
+let sustoParcialHasta = 0;
 const escalaDe = d => .35 + d * .9;
 const tamBase = () => limitar(H() * .1, 46, 110);
 function sueloY(d) { const h = escena.horizonte; return (h + .02 + d * (.92 - h - .02)) * H(); }
@@ -885,7 +889,7 @@ function crearAnimal(dentro, T, extra = {}) {
     x: dentro ? azar(.15, .85) * W() : (dir === 1 ? -150 - (extra.off || 0) : W() + 150 + (extra.off || 0)),
     d: extra.d ?? azar(.05, .8), dObj: azar(.1, .9), alt: azar(.1, .9), altObj: azar(.1, .9),
     vel: extra.vel || T.v * azar(.85, 1.15), estado: 'pasea', tDec: azar(2, 5), fase: Math.random() * 10,
-    sem: Math.random() * 100, salto: 0, saltoAmp: 40, accion: null, tAcc: 0, filtro: -1, tPolvo: 0
+    sem: Math.random() * 100, umbral: azar(.42, .85), salto: 0, saltoAmp: 40, accion: null, tAcc: 0, filtro: -1, tPolvo: 0
   };
   a.vx = dentro ? 0 : a.dir * a.vel;
   a.dObj = a.d;
@@ -924,19 +928,19 @@ function tocarAnimal(a) {
   a.tNombre = setTimeout(() => a.el.classList.remove('nombrado'), 2500);
 }
 
-function asustarTodos() {
-  for (const a of animales) {
-    if (a.estado === 'huye' || a.estado === 'sobresalto') continue;
-    a.estado = 'sobresalto'; a.tEst = .35; a.fijo = true;
-    a.dir = a.x < W() / 2 ? -1 : 1;
-    a.salto = 1; a.saltoAmp = 60;
-    a.dObj = 0;
-    if (a.T.t === 'aire') a.altObj = -1;
-    if (a.T.t === 'agua') a.altObj = Math.random() < .5 ? 0 : 1;
-    bocadillo(a, elegir(['😱', '❗', '💦']), 5);
-    a.el.classList.remove('nombrado');
-  }
+const huyendo = a => a.estado === 'huye' || a.estado === 'sobresalto';
+function asustar(a) {
+  if (huyendo(a)) return;
+  a.estado = 'sobresalto'; a.tEst = azar(.2, .45); a.fijo = true;
+  a.dir = a.x < W() / 2 ? -1 : 1;
+  a.salto = 1; a.saltoAmp = 60;
+  a.dObj = 0;
+  if (a.T.t === 'aire') a.altObj = -1;
+  if (a.T.t === 'agua') a.altObj = Math.random() < .5 ? 0 : 1;
+  bocadillo(a, elegir(['😱', '❗', '💦']), 5);
+  a.el.classList.remove('nombrado');
 }
+function asustarTodos() { animales.forEach(asustar); }
 
 function decidir(a, confiados) {
   const T = a.T, tipo = T.t;
@@ -1080,27 +1084,33 @@ function bucle(ahora) {
   leerMicro(ahora);
   ruido *= Math.pow(.25, dt);
   if (ruido > UMBRAL_NERVIO) calmaDesde = ahora;
-  if (ruido > UMBRAL_SUSTO) { asustarTodos(); asustadosHasta = ahora + 3500; }
+  if (ruido > UMBRAL_GRITO) { asustarTodos(); asustadosHasta = ahora + 3500; }
+  else {
+    let n = 0;
+    for (const a of animales) if (!huyendo(a) && ruido > a.umbral) { asustar(a); n++; }
+    if (n) sustoParcialHasta = ahora + 2200;
+  }
   const nervioso = ruido > UMBRAL_NERVIO;
   const confiados = ahora - calmaDesde > 6000;
 
   let msg;
-  if (ahora < asustadosHasta) msg = '😱 ¡Mucho ruido! Se han escondido...';
+  if (ahora < asustadosHasta) msg = '😱 ¡Un grito! Se han escondido todos...';
+  else if (ahora < sustoParcialHasta) msg = '🙉 ¡Uy! Algunos se han ido...';
   else if (nervioso) msg = '👀 Shhh... están nerviosos';
   else if (confiados) msg = '😊 ¡Qué silencio! Se acercan';
   else msg = '🤫 Silencio... ¡vienen los animales!';
   if (msg !== ultimoMsg) { $('mensaje').textContent = msg; $('mensaje').classList.toggle('alerta', ahora < asustadosHasta); ultimoMsg = msg; }
   $('nivel').style.width = Math.min(100, ruido * 100) + '%';
-  $('nivel').style.background = ruido > UMBRAL_SUSTO ? '#e53935' : nervioso ? '#ffa726' : '#66bb6a';
-  $('cara').textContent = ruido > UMBRAL_SUSTO ? '😱' : nervioso ? '😮' : '🙂';
+  $('nivel').style.background = ruido > UMBRAL_GRITO ? '#e53935' : ruido > .42 ? '#ff7043' : nervioso ? '#ffa726' : '#66bb6a';
+  $('cara').textContent = ruido > UMBRAL_GRITO ? '😱' : ruido > .42 ? '😨' : nervioso ? '😮' : '🙂';
 
   // cámara: sigue al ratón, o se mece sola
   if (ahora - ultimoRaton > 4000) camObj = Math.sin(t / 9) * 18;
   cam += (camObj - cam) * Math.min(1, dt * 2.5);
   moverDecor();
 
-  const activos = animales.filter(a => a.estado !== 'huye' && a.estado !== 'sobresalto').length;
-  if (ahora > asustadosHasta && !nervioso && activos < MAX_ANIMALES && Math.random() < dt * (confiados ? .9 : .45)) aparecer();
+  const activos = animales.filter(a => !huyendo(a)).length;
+  if (ahora > asustadosHasta && ahora > sustoParcialHasta && !nervioso && activos < MAX_ANIMALES && Math.random() < dt * (confiados ? .9 : .45)) aparecer();
 
   for (const a of [...animales]) moverAnimal(a, dt, t, nervioso, confiados);
   dibujarAmbiente(dt, t);
@@ -1132,7 +1142,7 @@ function leerMicro(ahora) {
   const nivel = Math.min(1.2, Math.sqrt(suma / datos.length) * +$('sens').value * 2.5);
   if (nivel > ruido) ruido = nivel;
 }
-function hacerRuido() { ruido = Math.min(1.2, ruido + .45); }
+function hacerRuido() { ruido = Math.min(1.2, ruido + .3); }
 $('btnPalmada').onclick = hacerRuido;
 window.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); hacerRuido(); } });
 
