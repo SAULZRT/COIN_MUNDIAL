@@ -1,0 +1,464 @@
+﻿[
+    {
+        "archivo":  "mono.glb",
+        "modelo":  "monkey",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/0yRz2AkLuuo"
+    },
+    {
+        "archivo":  "loro.glb",
+        "modelo":  "Parrot",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/dfNjMLtO0pd"
+    },
+    {
+        "archivo":  "tigre.glb",
+        "modelo":  "Tiger",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/5A3w06FXUup"
+    },
+    {
+        "archivo":  "serpiente.glb",
+        "modelo":  "Cobra",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/40_5Xq467-U"
+    },
+    {
+        "archivo":  "elefante.glb",
+        "modelo":  "Elephant",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/a27MA0rXyyj"
+    },
+    {
+        "archivo":  "gorila.glb",
+        "modelo":  "Gorilla",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/bmfQ1j9CeO2"
+    },
+    {
+        "archivo":  "rana.glb",
+        "modelo":  "Tree frog",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/cwyNyIba6WE"
+    },
+    {
+        "archivo":  "mariposa.glb",
+        "modelo":  "Butterfly",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/e9NAQQrCbLu"
+    },
+    {
+        "archivo":  "cocodrilo.glb",
+        "modelo":  "Crocodile",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/2an6E2WjW3z"
+    },
+    {
+        "archivo":  "jaguar.glb",
+        "modelo":  "Jaguar",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/4fb-oMr2uUF"
+    },
+    {
+        "archivo":  "tucan.glb",
+        "modelo":  "Toco Toucan",
+        "autor":  "Anonymous",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/fFVqukPnc62"
+    },
+    {
+        "archivo":  "camello.glb",
+        "modelo":  "Camel",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/cyuwV4fg0B1"
+    },
+    {
+        "archivo":  "dromedario.glb",
+        "modelo":  "Camel",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/7XeLogrxLad"
+    },
+    {
+        "archivo":  "escorpion.glb",
+        "modelo":  "Scorpion",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/6Bu7d_Pkm5o"
+    },
+    {
+        "archivo":  "lagarto.glb",
+        "modelo":  "Lizard",
+        "autor":  "madtrollstudio",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/0z3NJc5zAE"
+    },
+    {
+        "archivo":  "aguila.glb",
+        "modelo":  "Eagle",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/d7CSLvsHULY"
+    },
+    {
+        "archivo":  "buitre.glb",
+        "modelo":  "Turkey vulture",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/fvAgunyr1kd"
+    },
+    {
+        "archivo":  "liebre.glb",
+        "modelo":  "Jackrabbit",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/biNOm96olTH"
+    },
+    {
+        "archivo":  "leon.glb",
+        "modelo":  "Lion",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/daMBBUnd9c9"
+    },
+    {
+        "archivo":  "jirafa.glb",
+        "modelo":  "Giraffe",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/80w8kwQU0QH"
+    },
+    {
+        "archivo":  "cebra.glb",
+        "modelo":  "Zebra",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/iclPBR6SBZ"
+    },
+    {
+        "archivo":  "hipopotamo.glb",
+        "modelo":  "Hippopotamus",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/4HNi8dZMdZa"
+    },
+    {
+        "archivo":  "rinoceronte.glb",
+        "modelo":  "Rhinoceros",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/7XutktqrTj_"
+    },
+    {
+        "archivo":  "guepardo.glb",
+        "modelo":  "Cheetah",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/5y59KqZXxWf"
+    },
+    {
+        "archivo":  "avestruz.glb",
+        "modelo":  "Ostrich",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/1LtIviy4khn"
+    },
+    {
+        "archivo":  "flamenco.glb",
+        "modelo":  "Flamingo",
+        "autor":  "Хмара Сергей",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/5hUIvLVFqet"
+    },
+    {
+        "archivo":  "hiena.glb",
+        "modelo":  "Spotted hyena",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/0yU1LU3Nkpu"
+    },
+    {
+        "archivo":  "pinguino.glb",
+        "modelo":  "Penguin",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/fBXvsC6pe_V"
+    },
+    {
+        "archivo":  "osopolar.glb",
+        "modelo":  "Bear",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/0PXWfxfb0Hu"
+    },
+    {
+        "archivo":  "foca.glb",
+        "modelo":  "Seal",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/fudlK4rnsI-"
+    },
+    {
+        "archivo":  "reno.glb",
+        "modelo":  "Stag",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/tQdzbZ1Cmw"
+    },
+    {
+        "archivo":  "buho.glb",
+        "modelo":  "Flying Owl",
+        "autor":  "Google Data Arts Team",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/LxDvGVarJ2"
+    },
+    {
+        "archivo":  "morsa.glb",
+        "modelo":  "Walrus",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/2ivrvruGzxc"
+    },
+    {
+        "archivo":  "pezpayaso.glb",
+        "modelo":  "Clownfish",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/769fHo3eEB"
+    },
+    {
+        "archivo":  "pezcirujano.glb",
+        "modelo":  "Yellow Tang",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/CrDlkPLon0"
+    },
+    {
+        "archivo":  "pezmariposa.glb",
+        "modelo":  "Butterfly Fish",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/s2MkBeSzGy"
+    },
+    {
+        "archivo":  "pulpo.glb",
+        "modelo":  "Octopus",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/9-b6-yqrwEe"
+    },
+    {
+        "archivo":  "tortuga.glb",
+        "modelo":  "Turtle",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/fklSEvGm1Q8"
+    },
+    {
+        "archivo":  "tiburon.glb",
+        "modelo":  "Shark",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/AyHTK3zUSG"
+    },
+    {
+        "archivo":  "delfin.glb",
+        "modelo":  "Dolphin",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/3LzFgI3GLO"
+    },
+    {
+        "archivo":  "cangrejo.glb",
+        "modelo":  "Crab",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/2DgM36qZW2u"
+    },
+    {
+        "archivo":  "ballena.glb",
+        "modelo":  "Whale",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/JGFwp6xWgk"
+    },
+    {
+        "archivo":  "medusa.glb",
+        "modelo":  "Jellyfish",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/dA5osnS0Rzj"
+    },
+    {
+        "archivo":  "pezglobo.glb",
+        "modelo":  "Puffer",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/UKHtgpxTOk"
+    },
+    {
+        "archivo":  "calamar.glb",
+        "modelo":  "Squid",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/gReSPnGdkr"
+    },
+    {
+        "archivo":  "pezleon.glb",
+        "modelo":  "Lionfish",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/czsz9Baw86"
+    },
+    {
+        "archivo":  "oso.glb",
+        "modelo":  "Bear",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/4knUstaaX5C"
+    },
+    {
+        "archivo":  "osonegro.glb",
+        "modelo":  "Black bear",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/56ym_pyVnel"
+    },
+    {
+        "archivo":  "zorro.glb",
+        "modelo":  "Fox",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/Bc97C66HKi"
+    },
+    {
+        "archivo":  "lobo.glb",
+        "modelo":  "Wolf",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/P1gU3Qkr9r"
+    },
+    {
+        "archivo":  "ciervo.glb",
+        "modelo":  "Deer",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/T6Cs7tmMHJ"
+    },
+    {
+        "archivo":  "ardilla.glb",
+        "modelo":  "Squirrel",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/caxos24uWC9"
+    },
+    {
+        "archivo":  "erizo.glb",
+        "modelo":  "Hedgehog",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/8UNni5IvK_c"
+    },
+    {
+        "archivo":  "jabali.glb",
+        "modelo":  "Boar",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/57fSWum6F1P"
+    },
+    {
+        "archivo":  "mapache.glb",
+        "modelo":  "Raccoon",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/xMmx6VQP3r"
+    },
+    {
+        "archivo":  "vaca.glb",
+        "modelo":  "Cow",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/5XSc2Fka3F"
+    },
+    {
+        "archivo":  "cerdo.glb",
+        "modelo":  "Pig",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/TNvG3QUFlp"
+    },
+    {
+        "archivo":  "oveja.glb",
+        "modelo":  "Sheep",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/C39AUXUUes"
+    },
+    {
+        "archivo":  "caballo.glb",
+        "modelo":  "Horse",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/qvTrSG9pZF"
+    },
+    {
+        "archivo":  "pato.glb",
+        "modelo":  "Mallard duck",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/frSLi6b6Vid"
+    },
+    {
+        "archivo":  "cabra.glb",
+        "modelo":  "Goat",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/d7dImmjtF8E"
+    },
+    {
+        "archivo":  "perro.glb",
+        "modelo":  "Shiba Inu",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/y4wdQpg767"
+    },
+    {
+        "archivo":  "gato.glb",
+        "modelo":  "Cat",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/6dM1J6f6pm9"
+    },
+    {
+        "archivo":  "toro.glb",
+        "modelo":  "Bull",
+        "autor":  "Quaternius",
+        "licencia":  "CC0",
+        "url":  "https://poly.pizza/m/a8PIIYwF7r"
+    },
+    {
+        "archivo":  "gallina.glb",
+        "modelo":  "Hen",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/8Unya0rw9tR"
+    },
+    {
+        "archivo":  "gallo.glb",
+        "modelo":  "Rooster",
+        "autor":  "Poly by Google",
+        "licencia":  "CC-BY",
+        "url":  "https://poly.pizza/m/6NTegstc5Jy"
+    }
+]
