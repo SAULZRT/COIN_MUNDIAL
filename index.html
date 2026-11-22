@@ -579,7 +579,7 @@ let cam = 0, camObj = 0, ultimoRaton = -1e9, camDecor = 1e9;
 // Ruido: a partir de NERVIO se ponen nerviosos; cada animal tiene su propio umbral (entre .42 y .85)
 // y huye cuando el ruido lo supera, así que se van de pocos en pocos. Con un GRITO huyen todos.
 const MAX_ANIMALES = 7, UMBRAL_NERVIO = .3, UMBRAL_GRITO = .9;
-let sustoParcialHasta = 0;
+let sustoParcialHasta = 0, proximoSusto = 0, evacuando = false;
 const escalaDe = d => .35 + d * .9;
 const tamBase = () => limitar(H() * .1, 46, 110);
 function sueloY(d) { const h = escena.horizonte; return (h + .02 + d * (.92 - h - .02)) * H(); }
@@ -940,7 +940,6 @@ function asustar(a) {
   bocadillo(a, elegir(['😱', '❗', '💦']), 5);
   a.el.classList.remove('nombrado');
 }
-function asustarTodos() { animales.forEach(asustar); }
 
 function decidir(a, confiados) {
   const T = a.T, tipo = T.t;
@@ -1084,17 +1083,21 @@ function bucle(ahora) {
   leerMicro(ahora);
   ruido *= Math.pow(.25, dt);
   if (ruido > UMBRAL_NERVIO) calmaDesde = ahora;
-  if (ruido > UMBRAL_GRITO) { asustarTodos(); asustadosHasta = ahora + 3500; }
-  else {
-    let n = 0;
-    for (const a of animales) if (!huyendo(a) && ruido > a.umbral) { asustar(a); n++; }
-    if (n) sustoParcialHasta = ahora + 2200;
+  // Nunca huyen todos a la vez: sale uno, luego otro... (primero los más miedosos).
+  // Con un grito se acaban yendo todos, pero también de uno en uno.
+  if (ruido > UMBRAL_GRITO) evacuando = true;
+  const quedan = animales.filter(a => !huyendo(a)).sort((p, q) => p.umbral - q.umbral);
+  if (evacuando) { asustadosHasta = ahora + 2500; if (!quedan.length) evacuando = false; }
+  if (ahora >= proximoSusto) {
+    const a = evacuando ? quedan[0] : quedan.find(a => ruido > a.umbral);
+    if (a) { asustar(a); proximoSusto = ahora + (evacuando ? azar(450, 750) : azar(800, 1300)); sustoParcialHasta = ahora + 2200; }
   }
   const nervioso = ruido > UMBRAL_NERVIO;
   const confiados = ahora - calmaDesde > 6000;
 
   let msg;
-  if (ahora < asustadosHasta) msg = '😱 ¡Un grito! Se han escondido todos...';
+  if (evacuando) msg = '😱 ¡Un grito! Se están yendo todos...';
+  else if (ahora < asustadosHasta) msg = '😱 ¡Se han escondido todos!';
   else if (ahora < sustoParcialHasta) msg = '🙉 ¡Uy! Algunos se han ido...';
   else if (nervioso) msg = '👀 Shhh... están nerviosos';
   else if (confiados) msg = '😊 ¡Qué silencio! Se acercan';
