@@ -1,1244 +1,1155 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPAINWINNER ($SWINNER) - World Cup 2026 Champions</title>
-    
-    <!-- Primary Meta Tags -->
-    <meta name="title" content="SPAINWINNER ($SWINNER) - World Cup 2026 Champions">
-    <meta name="description" content="Ride the wave of World Cup 2026. Spain is destined for glory, and $SWINNER is the coin of the champions. Join the winning team.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los animales y el silencio</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; overflow: hidden; font-family: "Comic Sans MS", "Chalkboard SE", "Trebuchet MS", sans-serif; user-select: none; }
+  body { background: #222; }
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://swinner.com/">
-    <meta property="og:title" content="SPAINWINNER ($SWINNER) - World Cup 2026 Champions">
-    <meta property="og:description" content="Ride the wave of World Cup 2026. Spain is destined for glory, and $SWINNER is the coin of the champions.">
-    <meta property="og:image" content="assets/hero_banner_clean.png">
+  #escena { position: fixed; inset: 0; overflow: hidden; }
+  .capa { position: absolute; top: 0; left: -60px; pointer-events: none; will-change: transform; }
+  .capa svg { display: block; }
+  canvas { position: absolute; inset: 0; pointer-events: none; }
+  #cvFondo { z-index: 2; }
+  #cvFrente { z-index: 300; }
+  #vineta { position: absolute; inset: 0; z-index: 310; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0,0,0,.28)); }
+  #velo { position: fixed; inset: 0; z-index: 900; background: #fff; opacity: 1; pointer-events: none; transition: opacity .4s; }
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://swinner.com/">
-    <meta property="twitter:title" content="SPAINWINNER ($SWINNER) - World Cup 2026 Champions">
-    <meta property="twitter:description" content="Ride the wave of World Cup 2026. Spain is destined for glory, and $SWINNER is the coin of the champions.">
-    <meta property="twitter:image" content="assets/hero_banner_clean.png">
+  .decor { position: absolute; left: 0; top: 0; pointer-events: none; line-height: 1; will-change: transform; }
+  .decor svg { display: block; overflow: visible; }
+  .bal { transform-box: fill-box; transform-origin: 50% 100%; animation: balanceo var(--d, 4s) ease-in-out infinite alternate; }
+  @keyframes balanceo { from { transform: rotate(calc(var(--a, 2deg) * -1)); } to { transform: rotate(var(--a, 2deg)); } }
+  .gira { animation: gira 80s linear infinite; }
+  @keyframes gira { to { transform: rotate(360deg); } }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/trophy.png">
+  .sombra { position: absolute; left: 0; top: 0; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, rgba(0,0,0,.4), rgba(0,0,0,0)); }
+  .animal { position: absolute; left: 0; top: 0; line-height: 1; cursor: pointer; transform-origin: 50% 100%; will-change: transform; }
+  .animal .cuerpo { display: inline-block; transform-origin: 50% 100%; }
+  .animal .burbuja { position: absolute; left: 50%; top: -.5em; font-size: .42em; opacity: 0; transform: translateX(-50%) scale(.3); transition: opacity .2s, transform .2s; pointer-events: none; }
+  .animal .burbuja.pop { opacity: 1; transform: translateX(-50%) scale(1); animation: pop .4s; }
+  @keyframes pop { 0% { transform: translateX(-50%) scale(.2); } 60% { transform: translateX(-50%) scale(1.3); } 100% { transform: translateX(-50%) scale(1); } }
+  .animal .nombre { position: absolute; left: 50%; bottom: -.4em; transform: translateX(-50%); font-size: .24em; background: #fff; color: #333; padding: .1em .5em; border-radius: 1em; white-space: nowrap; opacity: 0; transition: opacity .3s; box-shadow: 0 3px 0 rgba(0,0,0,.2); font-weight: bold; pointer-events: none; }
+  .animal.nombrado .nombre { opacity: 1; }
 
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brandBg: '#0c0c0c',
-                        brandGreen: '#00ff89',
-                        brandRed: '#ff0000',
-                        brandGold: '#ffd700',
-                    },
-                    fontFamily: {
-                        heading: ['Space Grotesk', 'sans-serif'],
-                        body: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
+  /* Interfaz */
+  #entornos { position: fixed; top: 10px; left: 0; right: 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 0 10px; z-index: 1000; }
+  #entornos button { font: inherit; font-size: 18px; font-weight: bold; border: 0; border-radius: 18px; padding: 8px 14px; background: rgba(255,255,255,.88); color: #333; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.25); display: flex; align-items: center; gap: 6px; transition: transform .15s; }
+  #entornos button:hover { transform: translateY(-2px); }
+  #entornos button span { font-size: 28px; }
+  #entornos button.activo { background: #ffd54f; transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+
+  #mensaje { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255,255,255,.92); color: #333; font-size: 26px; font-weight: bold; padding: 10px 24px; border-radius: 30px; box-shadow: 0 4px 0 rgba(0,0,0,.2); white-space: nowrap; transition: background .3s; }
+  #mensaje.alerta { background: #ff7043; color: #fff; animation: tiembla .4s; }
+  @keyframes tiembla { 25% { transform: translateX(-52%); } 75% { transform: translateX(-48%); } }
+
+  #panel { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.92); padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
+  #cara { font-size: 44px; width: 52px; text-align: center; }
+  #medidor { width: 260px; height: 30px; background: #ddd; border-radius: 15px; overflow: hidden; position: relative; }
+  #nivel { height: 100%; width: 0%; background: #66bb6a; border-radius: 15px; transition: background .2s; }
+  #medidor::after { content: ""; position: absolute; top: 0; bottom: 0; left: 65%; width: 4px; background: #e53935; }
+  #panel button { font: inherit; font-size: 18px; font-weight: bold; border: 0; border-radius: 20px; padding: 10px 16px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+  #btnMic { background: #4fc3f7; color: #fff; }
+  #btnMic.on { background: #43a047; }
+  #btnPalmada { background: #ffb74d; color: #fff; }
+  #ajustes { display: flex; flex-direction: column; align-items: center; font-size: 12px; color: #555; }
+  #ajustes input { width: 90px; }
+
+  @media (max-width: 700px) {
+    #entornos { gap: 4px; padding: 0 4px; flex-wrap: nowrap; }
+    #entornos button { font-size: 0; padding: 5px 6px; border-radius: 12px; }
+    #entornos button span { font-size: 24px; }
+    #mensaje { font-size: 17px; top: 62px; }
+    #medidor { width: 110px; }
+    #panel { gap: 8px; padding: 8px 10px; }
+    #panel button { font-size: 14px; padding: 8px 10px; }
+    #ajustes { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="escena">
+  <canvas id="cvFondo"></canvas>
+  <canvas id="cvFrente"></canvas>
+  <div id="vineta"></div>
+</div>
+<div id="velo"></div>
+
+<nav id="entornos"></nav>
+<div id="mensaje">🤫 Silencio... ¡vienen los animales!</div>
+
+<div id="panel">
+  <div id="cara">🙂</div>
+  <div id="medidor"><div id="nivel"></div></div>
+  <button id="btnMic">🎤 Micrófono</button>
+  <button id="btnPalmada">👏 ¡Ruido!</button>
+  <label id="ajustes">Sensibilidad<input id="sens" type="range" min="1" max="10" value="5"></label>
+</div>
+
+<script>
+// =====================================================================
+//  UTILIDADES
+// =====================================================================
+const $ = id => document.getElementById(id);
+const W = () => window.innerWidth, H = () => window.innerHeight;
+const azar = (a, b) => a + Math.random() * (b - a);
+const elegir = arr => arr[Math.floor(Math.random() * arr.length)];
+const limitar = (v, a, b) => Math.max(a, Math.min(b, v));
+function semilla(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function tono(hex, p) {
+  const n = parseInt(hex.slice(1), 16); const c = [n >> 16, n >> 8 & 255, n & 255];
+  const f = v => Math.round(p < 0 ? v * (1 + p) : v + (255 - v) * p);
+  return '#' + ((1 << 24) | (f(c[0]) << 16) | (f(c[1]) << 8) | f(c[2])).toString(16).slice(1);
+}
+let contId = 0; const uid = () => 'g' + (contId++);
+const f1 = v => v.toFixed(1);
+
+// =====================================================================
+//  DIBUJOS DEL PAISAJE (SVG). Cada uno devuelve [ancho, alto, svg]
+//  con la base del objeto abajo en el centro.
+// =====================================================================
+const ARTE = {
+  palmera(r, o) {
+    const lean = (r() - .5) * 60, tx = 100 + lean, ty = 70, hoja = o.hoja || '#3f9b3a';
+    const tronco = `M100 300 Q${f1(100 + lean * .15)} 190 ${f1(tx)} ${ty}`;
+    const hojaP = c => `<path d="M0 0 Q40 -30 92 8 Q45 -6 0 0Z" fill="${c}"/><path d="M0 0 Q45 -22 90 7" stroke="${tono(c, -.35)}" stroke-width="1.5" fill="none"/>`;
+    let s = `<g class="bal" style="--a:1.2deg;--d:${f1(3 + r() * 2)}s">`;
+    s += `<path d="${tronco}" stroke="#8a6440" stroke-width="15" fill="none" stroke-linecap="round"/>`;
+    s += `<path d="${tronco}" stroke="#6b4a2e" stroke-width="15" fill="none" stroke-dasharray="3 9"/>`;
+    s += `<g transform="translate(${f1(tx)} ${ty})"><g class="bal" style="--a:5deg;--d:${f1(2 + r() * 1.5)}s">`;
+    for (const lado of [-1, 1]) for (const ang of [-50, -18, 15]) s += `<g transform="scale(${lado} 1) rotate(${f1(ang + (r() - .5) * 10)})">${hojaP(ang < 0 ? tono(hoja, .15) : hoja)}</g>`;
+    s += `<g transform="rotate(-82)">${hojaP(tono(hoja, .25))}</g>`;
+    s += `<circle cx="-6" cy="8" r="7" fill="#6d4c2f"/><circle cx="6" cy="9" r="7" fill="#5d3f26"/><circle cx="0" cy="13" r="6.5" fill="#6d4c2f"/>`;
+    return [200, 300, s + '</g></g></g>'];
+  },
+  arbol(r, o) {
+    const [c1, c2, c3] = o.hojas || ['#2e7d32', '#43a047', '#66bb6a'];
+    let s = `<path d="M84 280 Q92 210 90 150 L110 150 Q108 210 116 280 Z" fill="#6d4c41"/><path d="M101 280 Q103 210 100 150 L110 150 Q108 210 116 280Z" fill="#5d4037"/>`;
+    s += `<path d="M96 195 Q80 172 66 162" stroke="#6d4c41" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M104 185 Q120 165 134 158" stroke="#5d4037" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+    s += `<g class="bal" style="--a:1.5deg;--d:${f1(3.5 + r() * 2)}s">`;
+    const bolas = (n, rx, ry, cy, rad, col) => { let t = ''; for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, d = Math.sqrt(r()); t += `<circle cx="${f1(100 + Math.cos(a) * rx * d)}" cy="${f1(cy + Math.sin(a) * ry * d)}" r="${f1(rad * (.75 + r() * .5))}" fill="${col}"/>`; } return t; };
+    s += bolas(10, 64, 42, 118, 38, c1) + bolas(7, 50, 30, 102, 30, c2) + bolas(5, 34, 18, 86, 20, c3);
+    if (o.lianas) for (let i = 0; i < 3; i++) { const x = 55 + r() * 90, l = 60 + r() * 70; s += `<path d="M${f1(x)} 135 q8 ${f1(l / 3)} 0 ${f1(l * 2 / 3)} t0 ${f1(l / 3)}" stroke="#2f6b2a" stroke-width="3" fill="none"/><ellipse cx="${f1(x)}" cy="${f1(135 + l)}" rx="6" ry="3.5" fill="#4caf50"/>`; }
+    if (o.frutos) for (let i = 0; i < 6; i++) s += `<circle cx="${f1(50 + r() * 100)}" cy="${f1(85 + r() * 55)}" r="5" fill="${o.frutos}"/>`;
+    return [200, 280, s + '</g>'];
+  },
+  pino(r, o) {
+    const c = o.color || '#2e6b3f';
+    let s = `<rect x="53" y="215" width="14" height="45" fill="#5d4037"/><g class="bal" style="--a:1deg;--d:${f1(4 + r() * 2)}s">`;
+    for (let k = 0; k < 4; k++) {
+      const top = 15 + k * 48, half = 24 + k * 12, bot = top + 75;
+      s += `<polygon points="60,${top} ${60 - half},${bot} ${60 + half},${bot}" fill="${tono(c, .1 - k * .03)}"/><polygon points="60,${top} ${60 + half},${bot} 60,${bot}" fill="${tono(c, -.3)}" opacity=".55"/>`;
+      if (o.nieve) s += `<path d="M60 ${top} L${f1(60 - half * .45)} ${top + 33} q${f1(half * .15)} 6 ${f1(half * .3)} 0 q${f1(half * .15)} 6 ${f1(half * .3)} 0 q${f1(half * .15)} 6 ${f1(half * .3)} 0 Z" fill="#fff"/>`;
+    }
+    return [120, 260, s + '</g>'];
+  },
+  acacia(r) {
+    let s = `<path d="M130 220 Q126 180 128 150" stroke="#5b4636" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M128 152 Q120 118 92 86 M128 152 Q138 118 172 88 M128 160 Q118 128 122 94" stroke="#5b4636" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+    s += `<g class="bal" style="--a:1deg;--d:${f1(4 + r() * 2)}s"><ellipse cx="130" cy="82" rx="118" ry="23" fill="#5f7a2e"/><ellipse cx="120" cy="70" rx="96" ry="18" fill="#748f38"/><ellipse cx="152" cy="63" rx="56" ry="12" fill="#8aa845"/><ellipse cx="82" cy="70" rx="40" ry="10" fill="#8aa845"/></g>`;
+    return [260, 220, s];
+  },
+  cactus(r) {
+    const c = '#4a9c4a', osc = tono(c, -.25), cla = tono(c, .25);
+    const brazo = d => `<path d="${d}" stroke="${osc}" stroke-width="21" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" stroke="${c}" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const y1 = 105 + r() * 30, y2 = 85 + r() * 30;
+    let s = brazo(`M50 ${f1(y1)} H28 Q22 ${f1(y1)} 22 ${f1(y1 - 8)} V${f1(y1 - 55)}`) + brazo(`M70 ${f1(y2)} H92 Q98 ${f1(y2)} 98 ${f1(y2 - 8)} V${f1(y2 - 45)}`);
+    s += `<rect x="43" y="18" width="34" height="185" rx="17" fill="${c}"/><rect x="62" y="18" width="15" height="185" rx="7" fill="${osc}" opacity=".5"/>`;
+    for (const x of [51, 60]) s += `<line x1="${x}" y1="30" x2="${x}" y2="198" stroke="${cla}" stroke-width="2" opacity=".7"/>`;
+    if (r() < .6) s += `<circle cx="60" cy="18" r="7" fill="#ff80ab"/><circle cx="60" cy="18" r="3" fill="#ffeb3b"/>`;
+    return [120, 200, s];
+  },
+  roca(r, o) {
+    const c = o.color || '#9e9e9e';
+    const p = [[5, 70], [12, 42 + r() * 10], [32, 18 + r() * 10], [62, 8 + r() * 8], [92, 20 + r() * 10], [112, 48 + r() * 10], [118, 70]].map(q => q.map(v => +f1(v)));
+    const pts = a => a.map(q => q.join(',')).join(' ');
+    return [120, 70, `<polygon points="${pts(p)}" fill="${c}"/><polygon points="${pts([p[1], p[2], p[3], [60, 40], [25, 55]])}" fill="${tono(c, .22)}"/><polygon points="${pts([p[3], p[4], p[5], [118, 70], [70, 70], [60, 40]])}" fill="${tono(c, -.2)}"/>`];
+  },
+  arbusto(r, o) {
+    const c = o.color || '#3e8e41'; let s = '';
+    for (let i = 0; i < 6; i++) { const rr = 15 + r() * 10; s += `<circle cx="${f1(25 + r() * 70)}" cy="${f1(70 - rr - r() * 8)}" r="${f1(rr)}" fill="${i < 3 ? tono(c, -.18) : c}"/>`; }
+    for (let i = 0; i < 3; i++) s += `<circle cx="${f1(30 + r() * 60)}" cy="${f1(30 + r() * 10)}" r="${f1(8 + r() * 5)}" fill="${tono(c, .2)}"/>`;
+    if (o.bayas) for (let i = 0; i < 7; i++) s += `<circle cx="${f1(22 + r() * 76)}" cy="${f1(30 + r() * 28)}" r="3.5" fill="${o.bayas}"/>`;
+    return [120, 70, `<g class="bal" style="--a:2deg;--d:${f1(3 + r() * 2)}s">${s}</g>`];
+  },
+  hierba(r, o) {
+    const c = o.color || '#3d8b37', h = o.alto || 60; let s = '';
+    for (let i = 0; i < 9; i++) { const dx = (r() - .5) * 44, hh = h * (.5 + r() * .5), x0 = 30 + (r() - .5) * 12; s += `<path d="M${f1(x0)} ${h} Q${f1(x0 + dx * .3)} ${f1(h - hh * .6)} ${f1(x0 + dx)} ${f1(h - hh)}" stroke="${tono(c, (r() - .5) * .35)}" stroke-width="3" fill="none" stroke-linecap="round"/>`; }
+    return [60, h, `<g class="bal" style="--a:${f1(4 + r() * 4)}deg;--d:${f1(1.5 + r() * 1.5)}s">${s}</g>`];
+  },
+  flor(r, o) {
+    const c = o.color || ['#e91e63', '#ff9800', '#ab47bc', '#fdd835', '#ffffff'][Math.floor(r() * 5)];
+    let s = `<path d="M15 60 Q13 40 15 22" stroke="#388e3c" stroke-width="2.5" fill="none"/><ellipse cx="10" cy="45" rx="5" ry="2.5" fill="#43a047" transform="rotate(-30 10 45)"/>`;
+    for (let i = 0; i < 5; i++) { const a = i * 72 * Math.PI / 180; s += `<circle cx="${f1(15 + Math.cos(a) * 6)}" cy="${f1(18 + Math.sin(a) * 6)}" r="5" fill="${c}"/>`; }
+    return [30, 60, `<g class="bal" style="--a:6deg;--d:${f1(1.5 + r())}s">${s}<circle cx="15" cy="18" r="3.5" fill="#ffd54f"/></g>`];
+  },
+  helecho(r, o) {
+    const c = o.color || '#2e7d32'; let s = '';
+    for (let i = 0; i < 7; i++) {
+      const a = (-160 + i * 23 + (r() - .5) * 8) * Math.PI / 180, l = 55 + r() * 25;
+      const ex = 60 + Math.cos(a) * l, ey = 80 + Math.sin(a) * l * .8, cx = 60 + Math.cos(a) * l * .5, cy = 80 + Math.sin(a) * l * .8 - 15;
+      const d = `M60 80 Q${f1(cx)} ${f1(cy)} ${f1(ex)} ${f1(ey)}`;
+      s += `<path d="${d}" stroke="${tono(c, (r() - .5) * .3)}" stroke-width="12" fill="none" stroke-dasharray="4 2" stroke-linecap="round"/><path d="${d}" stroke="${tono(c, -.3)}" stroke-width="1.5" fill="none"/>`;
+    }
+    return [120, 80, `<g class="bal" style="--a:3deg;--d:${f1(2.5 + r() * 2)}s">${s}</g>`];
+  },
+  seta(r, o) {
+    const c = o.color || '#e53935';
+    return [50, 50, `<path d="M20 50 Q18 35 21 28 H29 Q32 35 30 50Z" fill="#f5ecd7"/><path d="M5 30 Q25 0 45 30 Z" fill="${c}"/><path d="M5 30 Q25 24 45 30Z" fill="${tono(c, -.3)}"/><circle cx="18" cy="18" r="3" fill="#fff"/><circle cx="30" cy="14" r="2.5" fill="#fff"/><circle cx="35" cy="24" r="2.5" fill="#fff"/><circle cx="13" cy="25" r="2" fill="#fff"/>`];
+  },
+  tronco() {
+    return [140, 50, `<rect x="5" y="12" width="120" height="36" rx="18" fill="#7b5236"/><path d="M20 22 H100 M30 36 H110" stroke="#5d3c25" stroke-width="2"/><ellipse cx="122" cy="30" rx="14" ry="18" fill="#c49a6c"/><ellipse cx="122" cy="30" rx="8" ry="11" fill="none" stroke="#9c7046" stroke-width="2"/><ellipse cx="122" cy="30" rx="3" ry="4" fill="#9c7046"/><path d="M60 12 q4 -10 12 -8" stroke="#4caf50" stroke-width="3" fill="none"/>`];
+  },
+  coral(r, o) {
+    const c = o.color || '#ff7096'; let s = '';
+    const rama = (x, y, ang, len, w, n) => {
+      const ex = x + Math.cos(ang) * len, ey = y + Math.sin(ang) * len;
+      s += `<path d="M${f1(x)} ${f1(y)} L${f1(ex)} ${f1(ey)}" stroke="${n % 2 ? c : tono(c, -.12)}" stroke-width="${f1(w)}" stroke-linecap="round"/>`;
+      if (n > 0) { rama(ex, ey, ang - .35 - r() * .35, len * .75, w * .72, n - 1); rama(ex, ey, ang + .35 + r() * .35, len * .75, w * .72, n - 1); }
+      else s += `<circle cx="${f1(ex)}" cy="${f1(ey)}" r="${f1(w * .75)}" fill="${tono(c, .3)}"/>`;
+    };
+    rama(60, 120, -Math.PI / 2, 32, 12, 3);
+    return [120, 120, `<g class="bal" style="--a:1.5deg;--d:${f1(3 + r() * 2)}s">${s}</g>`];
+  },
+  alga(r, o) {
+    const c = o.color || '#2e9d5b'; let s = '';
+    for (let i = 0; i < 3; i++) {
+      const x = 18 + i * 11 + r() * 8, h = 120 + r() * 70; let d = `M${f1(x)} 200`;
+      for (let k = 1; k <= 6; k++) d += ` Q${f1(x + (k % 2 ? 14 : -14))} ${f1(200 - h * (k - .5) / 6)} ${f1(x)} ${f1(200 - h * k / 6)}`;
+      s += `<g class="bal" style="--a:${f1(6 + r() * 5)}deg;--d:${f1(2.5 + r() * 2)}s"><path d="${d}" stroke="${tono(c, (r() - .5) * .35)}" stroke-width="8" fill="none" stroke-linecap="round"/></g>`;
+    }
+    return [60, 200, s];
+  },
+  hielo(r) {
+    const top = 20 + r() * 30;
+    return [160, 90, `<polygon points="5,90 20,${f1(top + 20)} 60,${f1(top)} 110,${f1(top + 8)} 150,${f1(top + 30)} 158,90" fill="#e3f2fd"/><polygon points="60,${f1(top)} 110,${f1(top + 8)} 90,90 50,90" fill="#cfe5fb"/><polygon points="110,${f1(top + 8)} 150,${f1(top + 30)} 158,90 90,90" fill="#a9d0f5"/><polygon points="20,${f1(top + 20)} 60,${f1(top)} 45,${f1(top + 25)}" fill="#fff"/>`];
+  },
+  granero() {
+    return [220, 180, `<rect x="25" y="70" width="170" height="110" fill="#c62828"/><rect x="150" y="70" width="45" height="110" fill="#8e1c1c" opacity=".5"/><polygon points="8,76 110,8 212,76" fill="#4e342e"/><polygon points="25,76 110,22 195,76" fill="#b71c1c"/><rect x="85" y="110" width="50" height="70" fill="#fff"/><rect x="90" y="115" width="40" height="65" fill="#8d2a1e"/><path d="M90 115 L130 180 M130 115 L90 180" stroke="#fff" stroke-width="4"/><rect x="98" y="45" width="24" height="22" fill="#fff"/><rect x="102" y="49" width="16" height="14" fill="#4e342e"/><rect x="25" y="76" width="170" height="5" fill="#fff"/>`];
+  },
+  valla() {
+    let s = `<rect x="0" y="18" width="240" height="7" fill="#f5f5f5"/><rect x="0" y="36" width="240" height="7" fill="#f5f5f5"/>`;
+    for (let x = 5; x < 240; x += 46) s += `<rect x="${x}" y="5" width="9" height="55" fill="#fff" stroke="#bdbdbd"/><polygon points="${x},5 ${x + 4.5},0 ${x + 9},5" fill="#fff"/>`;
+    return [240, 60, s];
+  },
+  paca() {
+    return [90, 65, `<rect x="5" y="10" width="80" height="55" rx="8" fill="#e6c25a"/><path d="M10 22 H80 M10 38 H80 M10 54 H80" stroke="#c9a23c" stroke-width="2"/><rect x="5" y="30" width="80" height="5" fill="#a1887f"/><rect x="60" y="10" width="25" height="55" rx="8" fill="#000" opacity=".08"/>`];
+  },
+  girasol(r) {
+    let s = `<path d="M20 120 Q18 70 20 30" stroke="#558b2f" stroke-width="4" fill="none"/><ellipse cx="12" cy="80" rx="9" ry="4" fill="#689f38" transform="rotate(-25 12 80)"/><ellipse cx="28" cy="65" rx="9" ry="4" fill="#689f38" transform="rotate(25 28 65)"/>`;
+    for (let i = 0; i < 12; i++) s += `<ellipse cx="20" cy="17" rx="4" ry="10" fill="#fdd835" transform="rotate(${i * 30} 20 27)"/>`;
+    return [40, 120, `<g class="bal" style="--a:3deg;--d:${f1(2.5 + r() * 2)}s">${s}<circle cx="20" cy="27" r="8" fill="#6d4c41"/></g>`];
+  }
+};
+
+// =====================================================================
+//  CAPAS DEL FONDO (montañas, colinas, dunas...)
+// =====================================================================
+function cresta(c, w, h, r) {
+  const y0 = c.y * h, A = (c.amp || .03) * h, f = [r() * 6, r() * 6, r() * 6], k = [.8 + r() * 1.5, 2.5 + r() * 3, 6 + r() * 5];
+  const pts = [];
+  for (let i = 0; i <= 100; i++) { const u = i / 100; pts.push([u * w, y0 - A * (Math.sin(u * k[0] * Math.PI + f[0]) * .55 + Math.sin(u * k[1] * Math.PI + f[1]) * .3 + Math.sin(u * k[2] * Math.PI + f[2]) * .15)]); }
+  const lin = pts.map(p => f1(p[0]) + ' ' + f1(p[1])).join(' L');
+  return [`M0 ${h} L${lin} L${w} ${h}Z`, 'M' + lin, pts];
+}
+const CAPAS = {
+  colinas(c, w, h, r) { const [area] = cresta(c, w, h, r); return `<path d="${area}" fill="${c.color}"/>`; },
+  dunas(c, w, h, r) {
+    const [area, linea] = cresta(c, w, h, r), id = uid();
+    return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${tono(c.color, .12)}"/><stop offset=".25" stop-color="${c.color}"/><stop offset="1" stop-color="${tono(c.color, -.15)}"/></linearGradient></defs><path d="${area}" fill="url(#${id})"/><path d="${linea}" stroke="${tono(c.color, .35)}" stroke-width="3" fill="none" opacity=".8"/>`;
+  },
+  montes(c, w, h, r) {
+    const base = c.y * h, n = c.n || 5;
+    let s = `<rect x="0" y="${f1(base - 1)}" width="${w}" height="${f1(h - base + 1)}" fill="${c.color}"/>`;
+    const picos = [];
+    for (let i = 0; i < n; i++) picos.push({ x: (i + .15 + r() * .7) / n * w, alto: c.alto * h * (.55 + r() * .45) });
+    picos.sort((a, b) => b.alto - a.alto);
+    for (const p of picos) {
+      const px = p.x, py = base - p.alto, bw = p.alto * (c.ancho || 1.3);
+      s += `<polygon points="${f1(px)},${f1(py)} ${f1(px + bw)},${f1(base)} ${f1(px - bw)},${f1(base)}" fill="${c.color}"/>`;
+      s += `<polygon points="${f1(px)},${f1(py)} ${f1(px + bw)},${f1(base)} ${f1(px + bw * .12)},${f1(base)}" fill="#000" opacity=".1"/>`;
+      if (c.nieve) {
+        const t = .3, yy = py + p.alto * t;
+        s += `<path d="M${f1(px)} ${f1(py)} L${f1(px - bw * t)} ${f1(yy)} L${f1(px - bw * t * .5)} ${f1(yy - p.alto * .05)} L${f1(px)} ${f1(yy + p.alto * .03)} L${f1(px + bw * t * .5)} ${f1(yy - p.alto * .06)} L${f1(px + bw * t)} ${f1(yy)} Z" fill="#fff" opacity=".95"/>`;
+      }
+    }
+    return `<g opacity="${c.op || 1}">${s}</g>`;
+  },
+  pinos(c, w, h, r) {
+    const base = c.y * h;
+    let s = `<rect x="0" y="${f1(base - 2)}" width="${w}" height="${f1(h - base + 2)}" fill="${c.color}"/>`;
+    for (let x = -10; x < w + 20; x += 8 + r() * 14) {
+      const hh = c.h * h * (.6 + r() * .6), ww = hh * .28;
+      s += `<polygon points="${f1(x)},${f1(base - hh)} ${f1(x - ww)},${f1(base + 2)} ${f1(x + ww)},${f1(base + 2)}" fill="${c.color}"/>`;
+    }
+    return s;
+  },
+  copas(c, w, h, r) {
+    const base = c.y * h, R = c.r * (h / 800);
+    let s = `<rect x="0" y="${f1(base)}" width="${w}" height="${f1(h - base)}" fill="${c.color}"/>`;
+    for (let x = -R; x < w + R; x += R * (.8 + r() * .6)) {
+      const rr = R * (.7 + r() * .6), cy = base - r() * R * .5;
+      s += `<circle cx="${f1(x)}" cy="${f1(cy)}" r="${f1(rr)}" fill="${c.color}"/>`;
+      if (r() < .5) s += `<circle cx="${f1(x - rr * .25)}" cy="${f1(cy - rr * .35)}" r="${f1(rr * .45)}" fill="${tono(c.color, .1)}"/>`;
+    }
+    return s;
+  },
+  mesetas(c, w, h, r) {
+    const base = c.y * h, col = c.color, osc = tono(col, -.12);
+    let s = `<rect x="0" y="${f1(base)}" width="${w}" height="${f1(h - base)}" fill="${col}"/>`;
+    for (let i = 0; i < 4; i++) {
+      const x = r() * w, ww = w * (.08 + r() * .12), hh = h * (.05 + r() * .09);
+      s += `<polygon points="${f1(x)},${f1(base + 1)} ${f1(x + ww * .12)},${f1(base - hh)} ${f1(x + ww * .88)},${f1(base - hh)} ${f1(x + ww)},${f1(base + 1)}" fill="${col}"/>`;
+      s += `<rect x="${f1(x + ww * .1)}" y="${f1(base - hh * .62)}" width="${f1(ww * .82)}" height="${f1(hh * .06)}" fill="${osc}"/><rect x="${f1(x + ww * .06)}" y="${f1(base - hh * .3)}" width="${f1(ww * .9)}" height="${f1(hh * .06)}" fill="${osc}"/>`;
+      s += `<polygon points="${f1(x + ww * .6)},${f1(base - hh)} ${f1(x + ww * .88)},${f1(base - hh)} ${f1(x + ww)},${f1(base + 1)} ${f1(x + ww * .7)},${f1(base + 1)}" fill="#000" opacity=".1"/>`;
+    }
+    return s;
+  },
+  campos(c, w, h, r) {
+    const [area, , pts] = cresta(c, w, h, r), id = uid();
+    const cols = ['#9ccc65', '#c5e1a5', '#d4e157', '#8bc34a', '#e6ee9c', '#aed581'];
+    let s = `<defs><clipPath id="${id}"><path d="${area}"/></clipPath></defs><path d="${area}" fill="#9ccc65"/><g clip-path="url(#${id})">`;
+    let x = -w * .3; const top = c.y * h - h * .1;
+    while (x < w * 1.3) { const bw = w * (.05 + r() * .08); s += `<polygon points="${f1(x)},${f1(top)} ${f1(x + bw)},${f1(top)} ${f1((x + bw - w / 2) * 2.4 + w / 2)},${h} ${f1((x - w / 2) * 2.4 + w / 2)},${h}" fill="${cols[Math.floor(r() * cols.length)]}"/>`; x += bw; }
+    s += '</g>';
+    for (let i = 0; i < 14; i++) { const p = pts[Math.floor(r() * pts.length)]; s += `<circle cx="${f1(p[0])}" cy="${f1(p[1] - 3)}" r="${f1(5 + r() * 5)}" fill="#558b2f"/>`; }
+    return s;
+  },
+  niebla(c, w, h) {
+    const y = c.y * h, id = uid();
+    return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.color}" stop-opacity="0"/><stop offset=".5" stop-color="${c.color}" stop-opacity=".8"/><stop offset="1" stop-color="${c.color}" stop-opacity="0"/></linearGradient></defs><rect x="0" y="${f1(y - h * .08)}" width="${w}" height="${f1(h * .16)}" fill="url(#${id})"/>`;
+  }
+};
+
+// Texturas del suelo
+const TEXTURAS = {
+  hierba(w, h, hz, r) {
+    const col = escena.colorHierba || '#2f7a2c';
+    let s = `<g stroke="${col}" stroke-linecap="round" fill="none">`;
+    for (let i = 0; i < 320; i++) {
+      const d = Math.pow(r(), .8), y = hz + d * (h - hz), x = r() * w, l = 2 + d * 14;
+      s += `<path d="M${f1(x)} ${f1(y)} l${f1(-l * .35)} ${f1(-l)} M${f1(x)} ${f1(y)} l0 ${f1(-l * 1.2)} M${f1(x)} ${f1(y)} l${f1(l * .35)} ${f1(-l)}" stroke-width="${f1(.6 + d * 2)}" opacity="${(.35 + r() * .5).toFixed(2)}"/>`;
+    }
+    s += '</g>';
+    if (escena.flores) for (let i = 0; i < 70; i++) { const d = r(); s += `<circle cx="${f1(r() * w)}" cy="${f1(hz + d * (h - hz))}" r="${f1(1 + d * 3)}" fill="${['#fff', '#ffeb3b', '#f48fb1'][i % 3]}"/>`; }
+    return s;
+  },
+  arena(w, h, hz, r) {
+    let s = `<g fill="none" stroke-linecap="round">`;
+    for (let i = 0; i < 90; i++) { const d = r(), y = hz + d * (h - hz), x = r() * w, l = 20 + d * 120; s += `<path d="M${f1(x)} ${f1(y)} q${f1(l / 2)} ${f1(-3 - d * 6)} ${f1(l)} 0" stroke="${r() < .5 ? '#fff6dc' : '#c9944a'}" stroke-width="${f1(1 + d * 2)}" opacity=".45"/>`; }
+    return s + '</g>';
+  },
+  nieve(w, h, hz, r) {
+    let s = '';
+    for (let i = 0; i < 50; i++) { const d = r(), rx = 20 + d * 130; s += `<ellipse cx="${f1(r() * w)}" cy="${f1(hz + d * (h - hz))}" rx="${f1(rx)}" ry="${f1(rx * .12)}" fill="#c3d6ee" opacity=".5"/>`; }
+    for (let i = 0; i < 90; i++) { const d = r(); s += `<circle cx="${f1(r() * w)}" cy="${f1(hz + d * (h - hz))}" r="${f1(.8 + d * 1.8)}" fill="#fff"/>`; }
+    return s;
+  },
+  fondoMar(w, h, hz, r) {
+    let s = TEXTURAS.arena(w, h, hz, r);
+    for (let i = 0; i < 40; i++) { const d = r(); s += `<ellipse cx="${f1(r() * w)}" cy="${f1(hz + d * (h - hz))}" rx="${f1(2 + d * 6)}" ry="${f1(1.5 + d * 4)}" fill="${['#9e9e9e', '#bcaaa4', '#8d6e63'][i % 3]}"/>`; }
+    return s;
+  }
+};
+
+// =====================================================================
+//  ENTORNOS
+//  decor: [tipo, cantidad, [prof. min, max], [altura min, max] (fracción de pantalla), posición x, opciones]
+//  g (forma de moverse): anda, trota, brinca, repta, contonea, lento, vuela, revolotea, nada, pulsa
+// =====================================================================
+const ESCENAS = {
+  selva: {
+    nombre: 'Selva', art: 'La', icono: '🌴', seed: 11,
+    cielo: ['#8fdcb8', '#cdf3d2', '#e8fbe4'], horizonte: .5, sol: { x: .78, y: .16, c: '#fff59d' }, bruma: '#e6f8e6',
+    capas: [
+      { t: 'montes', y: .3, alto: .2, color: '#a3d9bd', n: 5, seed: 1 },
+      { t: 'niebla', y: .36, color: '#e9f9ee' },
+      { t: 'copas', y: .42, r: 30, color: '#6cb486', seed: 2 },
+      { t: 'copas', y: .48, r: 40, color: '#4a9a62', seed: 3 }
+    ],
+    suelo: ['#4f9e4a', '#2c6b2a'], textura: 'hierba', colorHierba: '#2a6b27',
+    decor: [
+      ['arbol', 5, [0, .35], [.32, .45], 'todo', { hojas: ['#2e7d32', '#43a047', '#66bb6a'], lianas: true }],
+      ['palmera', 3, [.1, .7], [.4, .55], 'todo', {}],
+      ['palmera', 2, [.9, 1.05], [.6, .7], 'bordes', {}],
+      ['arbol', 1, [.95, 1.05], [.7, .8], 'bordes', { hojas: ['#1b5e20', '#2e7d32', '#4caf50'], lianas: true }],
+      ['helecho', 7, [.2, 1], [.07, .12], 'todo', {}],
+      ['flor', 8, [.3, 1], [.05, .07], 'todo', {}],
+      ['seta', 3, [.5, 1], [.035, .05], 'todo', {}],
+      ['hierba', 14, [0, 1.08], [.04, .09], 'todo', { color: '#2e7d32' }]
+    ],
+    efectos: ['nubes', 'niebla', 'hojas', 'pajaros'],
+    animales: [
+      { e: '🐒', n: 'el mono', v: 70, t: 'suelo', g: 'brinca', s: .9, manada: true, emo: ['🍌', '🎵'] },
+      { e: '🦜', n: 'el loro', v: 110, t: 'aire', s: .7 },
+      { e: '🐅', n: 'el tigre', v: 70, t: 'suelo', g: 'anda', s: 1.25 },
+      { e: '🐍', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
+      { e: '🐘', n: 'el elefante', v: 40, t: 'suelo', g: 'anda', s: 1.6, manada: true },
+      { e: '🦥', n: 'el perezoso', v: 14, t: 'suelo', g: 'lento', acc: ['duerme', 'respira'], emo: ['💤'] },
+      { e: '🐸', n: 'la rana', v: 55, t: 'suelo', g: 'brinca', s: .5 },
+      { e: '🦋', n: 'la mariposa', v: 50, t: 'aire', g: 'revolotea', s: .45 },
+      { e: '🐊', n: 'el cocodrilo', v: 32, t: 'suelo', g: 'repta', s: 1.25 }
+    ]
+  },
+  desierto: {
+    nombre: 'Desierto', art: 'El', icono: '🌵', seed: 22,
+    cielo: ['#ff9a5a', '#ffc98a', '#ffe9c4'], horizonte: .56, sol: { x: .72, y: .2, c: '#fff3b0', r: 1.3 }, bruma: '#ffe6c0',
+    capas: [
+      { t: 'mesetas', y: .44, color: '#d98a5f', seed: 4 },
+      { t: 'dunas', y: .5, amp: .035, color: '#e8b47a', seed: 5 },
+      { t: 'dunas', y: .55, amp: .025, color: '#efc489', seed: 6 }
+    ],
+    suelo: ['#f3cf8e', '#d9a55a'], textura: 'arena',
+    decor: [
+      ['cactus', 5, [0, .8], [.12, .22], 'todo', {}],
+      ['cactus', 1, [.95, 1.05], [.38, .42], 'bordes', {}],
+      ['roca', 6, [0, 1], [.03, .07], 'todo', { color: '#b9835a' }],
+      ['arbusto', 4, [.2, 1], [.03, .05], 'todo', { color: '#9e8a4a' }],
+      ['hierba', 8, [.1, 1.05], [.03, .06], 'todo', { color: '#b59a52' }]
+    ],
+    efectos: ['calor', 'arena', 'pajaros'],
+    animales: [
+      { e: '🐪', n: 'el camello', v: 38, t: 'suelo', g: 'anda', s: 1.5, manada: true },
+      { e: '🦂', n: 'el escorpión', v: 40, t: 'suelo', g: 'repta', s: .55 },
+      { e: '🦎', n: 'el lagarto', v: 90, t: 'suelo', g: 'repta', s: .7 },
+      { e: '🐍', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
+      { e: '🦅', n: 'el águila', v: 120, t: 'aire', s: .9 },
+      { e: '🐫', n: 'el dromedario', v: 38, t: 'suelo', g: 'anda', s: 1.5 }
+    ]
+  },
+  sabana: {
+    nombre: 'Sabana', art: 'La', icono: '🦁', seed: 33,
+    cielo: ['#ffad6b', '#ffd28a', '#fff0b8'], horizonte: .55, sol: { x: .3, y: .3, c: '#fff0a0', r: 1.4 }, bruma: '#fff0c8',
+    capas: [
+      { t: 'montes', y: .45, alto: .2, color: '#c6a19c', n: 1, nieve: true, ancho: 2.2, seed: 7 },
+      { t: 'montes', y: .48, alto: .06, color: '#b9a07a', n: 6, ancho: 2.5, seed: 8 },
+      { t: 'colinas', y: .53, amp: .015, color: '#c8a85a', seed: 9 }
+    ],
+    suelo: ['#d8bf5f', '#a88a33'], textura: 'hierba', colorHierba: '#9c7f28',
+    decor: [
+      ['acacia', 4, [0, .6], [.15, .25], 'todo', {}],
+      ['acacia', 1, [.95, 1.05], [.4, .45], 'bordes', {}],
+      ['hierba', 20, [0, 1.08], [.04, .1], 'todo', { color: '#c9a13a', alto: 90 }],
+      ['roca', 3, [.2, 1], [.03, .06], 'todo', { color: '#a1887f' }],
+      ['arbusto', 3, [.1, .9], [.04, .06], 'todo', { color: '#8d9a4a' }]
+    ],
+    efectos: ['nubes', 'motas', 'pajaros'],
+    animales: [
+      { e: '🦁', n: 'el león', v: 60, t: 'suelo', g: 'anda', s: 1.25, acc: ['sienta', 'mira', 'respira'] },
+      { e: '🦒', n: 'la jirafa', v: 42, t: 'suelo', g: 'anda', s: 1.9, manada: true, acc: ['come', 'mira'] },
+      { e: '🦓', n: 'la cebra', v: 85, t: 'suelo', g: 'trota', s: 1.25, manada: true },
+      { e: '🐘', n: 'el elefante', v: 38, t: 'suelo', g: 'anda', s: 1.7, manada: true },
+      { e: '🦛', n: 'el hipopótamo', v: 32, t: 'suelo', g: 'anda', s: 1.4 },
+      { e: '🐆', n: 'el leopardo', v: 110, t: 'suelo', g: 'trota', s: 1.1 },
+      { e: '🦏', n: 'el rinoceronte', v: 48, t: 'suelo', g: 'anda', s: 1.5 }
+    ]
+  },
+  polo: {
+    nombre: 'Polo', art: 'El', icono: '🐧', seed: 44,
+    cielo: ['#1f2f73', '#5b4b9e', '#c98bbf', '#f7c4cf'], horizonte: .56, sol: { x: .3, y: .5, c: '#ffd6de', r: 1.2 }, bruma: '#f4e8f4',
+    capas: [
+      { t: 'montes', y: .5, alto: .3, color: '#9fa8da', nieve: true, n: 6, seed: 10 },
+      { t: 'montes', y: .54, alto: .16, color: '#c5cae9', nieve: true, n: 5, seed: 11 },
+      { t: 'colinas', y: .555, amp: .012, color: '#e8eaf6', seed: 12 }
+    ],
+    suelo: ['#ffffff', '#d6e4f5'], textura: 'nieve',
+    decor: [
+      ['pino', 4, [0, .5], [.14, .22], 'todo', { color: '#2e5e4e', nieve: true }],
+      ['pino', 2, [.95, 1.05], [.45, .55], 'bordes', { color: '#2e5e4e', nieve: true }],
+      ['hielo', 5, [0, 1], [.04, .08], 'todo', {}],
+      ['roca', 3, [.2, 1], [.03, .05], 'todo', { color: '#90a4ae' }],
+      ['emoji', 1, [.7, .8], [.09, .09], [.12, .2], { e: '⛄' }]
+    ],
+    efectos: ['estrellas', 'aurora', 'nieve'],
+    animales: [
+      { e: '🐧', n: 'el pingüino', v: 32, t: 'suelo', g: 'contonea', s: .9, manada: true },
+      { e: '🐻‍❄️', n: 'el oso polar', v: 42, t: 'suelo', g: 'anda', s: 1.4, acc: ['sienta', 'mira', 'duerme'], emo: ['💤', '🐟'] },
+      { e: '🦭', n: 'la foca', v: 28, t: 'suelo', g: 'repta', s: 1.1 },
+      { e: '🦌', n: 'el reno', v: 70, t: 'suelo', g: 'trota', s: 1.3, manada: true },
+      { e: '🦉', n: 'el búho nival', v: 90, t: 'aire', s: .8 }
+    ]
+  },
+  mar: {
+    nombre: 'Mar', art: 'El', icono: '🐠', seed: 55,
+    cielo: ['#63d3f7', '#2a8fd6', '#1360b0', '#0d4a91'], horizonte: .7, sol: null, bruma: '#6fb6e6', marino: true,
+    capas: [
+      { t: 'montes', y: .58, alto: .28, color: '#1d5a9c', n: 5, op: .55, ancho: 1.1, seed: 13 },
+      { t: 'montes', y: .66, alto: .2, color: '#1f6aad', n: 6, op: .75, ancho: 1.2, seed: 14 },
+      { t: 'niebla', y: .67, color: '#4a9bd8' }
+    ],
+    suelo: ['#e9d7a8', '#c8a76a'], textura: 'fondoMar',
+    decor: [
+      ['coral', 5, [0, 1], [.1, .2], 'todo', { color: '#ff7096' }],
+      ['coral', 4, [0, 1], [.1, .18], 'todo', { color: '#ff9f43' }],
+      ['coral', 3, [0, 1], [.08, .15], 'todo', { color: '#b388ff' }],
+      ['alga', 10, [0, 1.05], [.18, .4], 'todo', {}],
+      ['alga', 2, [.95, 1.05], [.5, .6], 'bordes', { color: '#1f7a45' }],
+      ['roca', 5, [0, 1], [.05, .09], 'todo', { color: '#6d7f8f' }],
+      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { e: '🐚' }],
+      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { e: '⭐' }]
+    ],
+    efectos: ['superficie', 'rayos', 'plancton', 'burbujas'],
+    animales: [
+      { e: '🐠', n: 'el pez', v: 80, t: 'agua', s: .7, manada: true },
+      { e: '🐙', n: 'el pulpo', v: 30, t: 'agua', g: 'pulsa' },
+      { e: '🐢', n: 'la tortuga', v: 30, t: 'agua', s: 1.1 },
+      { e: '🦈', n: 'el tiburón', v: 70, t: 'agua', s: 1.5 },
+      { e: '🐬', n: 'el delfín', v: 110, t: 'agua', s: 1.3, manada: true },
+      { e: '🦀', n: 'el cangrejo', v: 40, t: 'suelo', g: 'repta', s: .55 },
+      { e: '🐳', n: 'la ballena', v: 25, t: 'agua', s: 2.4 },
+      { e: '🪼', n: 'la medusa', v: 15, t: 'agua', g: 'pulsa', s: .8 },
+      { e: '🐡', n: 'el pez globo', v: 40, t: 'agua', s: .8 },
+      { e: '🦑', n: 'el calamar', v: 45, t: 'agua', g: 'pulsa', s: .9 }
+    ]
+  },
+  bosque: {
+    nombre: 'Bosque', art: 'El', icono: '🌲', seed: 66,
+    cielo: ['#ffc77d', '#ffe2ad', '#fff4dc'], horizonte: .5, sol: { x: .18, y: .2, c: '#fff1b8' }, bruma: '#fff1d8',
+    capas: [
+      { t: 'montes', y: .38, alto: .18, color: '#bfaab9', n: 4, seed: 15 },
+      { t: 'pinos', y: .42, h: .09, color: '#7c9a76', seed: 16 },
+      { t: 'pinos', y: .48, h: .12, color: '#4f7d52', seed: 17 }
+    ],
+    suelo: ['#86ad4c', '#4f7a2a'], textura: 'hierba', colorHierba: '#4f7a2a',
+    decor: [
+      ['pino', 5, [0, .5], [.25, .35], 'todo', { color: '#2e6b3f' }],
+      ['arbol', 3, [0, .6], [.28, .38], 'todo', { hojas: ['#d84315', '#f57c00', '#ffb74d'] }],
+      ['arbol', 2, [0, .6], [.28, .36], 'todo', { hojas: ['#2e7d32', '#558b2f', '#9ccc65'], frutos: '#e53935' }],
+      ['pino', 2, [.95, 1.05], [.7, .8], 'bordes', { color: '#285c37' }],
+      ['arbusto', 4, [.2, 1], [.04, .07], 'todo', { color: '#3e7a35', bayas: '#c2185b' }],
+      ['seta', 5, [.4, 1], [.03, .05], 'todo', {}],
+      ['tronco', 2, [.4, .9], [.04, .05], 'todo', {}],
+      ['helecho', 4, [.2, 1], [.06, .1], 'todo', { color: '#4e8a2e' }],
+      ['hierba', 12, [0, 1.08], [.04, .08], 'todo', { color: '#4f7a2a' }]
+    ],
+    efectos: ['rayos', 'hojas', 'luciernagas'],
+    animales: [
+      { e: '🦊', n: 'el zorro', v: 75, t: 'suelo', g: 'trota' },
+      { e: '🐻', n: 'el oso', v: 42, t: 'suelo', g: 'anda', s: 1.5, acc: ['sienta', 'come', 'duerme'], emo: ['🍯', '💤'] },
+      { e: '🦉', n: 'el búho', v: 80, t: 'aire', s: .8 },
+      { e: '🐿️', n: 'la ardilla', v: 90, t: 'suelo', g: 'brinca', s: .6, emo: ['🌰'] },
+      { e: '🦌', n: 'el ciervo', v: 70, t: 'suelo', g: 'trota', s: 1.4, manada: true },
+      { e: '🐇', n: 'el conejo', v: 80, t: 'suelo', g: 'brinca', s: .65, emo: ['🥕'] },
+      { e: '🦔', n: 'el erizo', v: 26, t: 'suelo', g: 'lento', s: .55 },
+      { e: '🐺', n: 'el lobo', v: 75, t: 'suelo', g: 'trota', s: 1.15 },
+      { e: '🐗', n: 'el jabalí', v: 55, t: 'suelo', g: 'anda', s: 1.1 }
+    ]
+  },
+  granja: {
+    nombre: 'Granja', art: 'La', icono: '🐄', seed: 77,
+    cielo: ['#5bb8f5', '#a6dcfb', '#e6f7ff'], horizonte: .5, sol: { x: .82, y: .15, c: '#fff59d' }, bruma: '#f0faff', flores: true,
+    capas: [
+      { t: 'campos', y: .38, amp: .05, seed: 18 },
+      { t: 'colinas', y: .47, amp: .02, color: '#8cc152', seed: 19 }
+    ],
+    suelo: ['#9ccc65', '#689f38'], textura: 'hierba', colorHierba: '#4c8a2a',
+    decor: [
+      ['granero', 1, [.03, .06], [.2, .2], [.12, .22], {}],
+      ['valla', 3, [.12, .14], [.05, .05], [.3, .9], {}],
+      ['arbol', 3, [0, .4], [.25, .32], 'todo', {}],
+      ['paca', 3, [.2, .8], [.05, .07], 'todo', {}],
+      ['girasol', 6, [.3, 1], [.1, .14], 'todo', {}],
+      ['flor', 8, [.2, 1], [.05, .07], 'todo', {}],
+      ['hierba', 12, [0, 1.08], [.04, .08], 'todo', {}]
+    ],
+    efectos: ['nubes', 'pajaros', 'motas'],
+    animales: [
+      { e: '🐄', n: 'la vaca', v: 32, t: 'suelo', g: 'anda', s: 1.4, acc: ['come', 'respira', 'mira'] },
+      { e: '🐖', n: 'el cerdo', v: 42, t: 'suelo', g: 'anda' },
+      { e: '🐑', n: 'la oveja', v: 38, t: 'suelo', g: 'anda', manada: true, acc: ['come', 'mira'] },
+      { e: '🐓', n: 'el gallo', v: 55, t: 'suelo', g: 'contonea', s: .7, emo: ['🎵'] },
+      { e: '🐎', n: 'el caballo', v: 90, t: 'suelo', g: 'trota', s: 1.5 },
+      { e: '🦆', n: 'el pato', v: 45, t: 'suelo', g: 'contonea', s: .7, manada: true },
+      { e: '🐐', n: 'la cabra', v: 52, t: 'suelo', g: 'brinca' },
+      { e: '🐕', n: 'el perro', v: 85, t: 'suelo', g: 'trota', s: .95, emo: ['🦴', '❤️'] },
+      { e: '🐈', n: 'el gato', v: 50, t: 'suelo', g: 'anda', s: .8, acc: ['sienta', 'duerme', 'mira'] }
+    ]
+  }
+};
+
+// =====================================================================
+//  ESTADO
+// =====================================================================
+const escenaEl = $('escena');
+let escena = null, claveEscena = null, animales = [], decor = [], capas = [], amb = {};
+let ruido = 0, asustadosHasta = 0, calmaDesde = performance.now(), ignorarMicHasta = 0;
+let cam = 0, camObj = 0, ultimoRaton = -1e9, camDecor = 1e9;
+const MAX_ANIMALES = 7, UMBRAL_SUSTO = .65, UMBRAL_NERVIO = .35;
+const escalaDe = d => .35 + d * .9;
+const tamBase = () => limitar(H() * .1, 46, 110);
+function sueloY(d) { const h = escena.horizonte; return (h + .02 + d * (.92 - h - .02)) * H(); }
+function zona(t) { const h = escena.horizonte; if (t === 'aire') return [.1, h - .12]; if (t === 'agua') return [.2, h - .03]; return [h + .02, .92]; }
+function bruma(d) { return escena.marino ? `saturate(${f1(.5 + .5 * d)}) brightness(${(.85 + .15 * d).toFixed(2)})` : `saturate(${(.6 + .4 * d).toFixed(2)}) brightness(${(1.12 - .12 * d).toFixed(2)})`; }
+
+// =====================================================================
+//  CONSTRUIR EL PAISAJE
+// =====================================================================
+for (const [clave, esc] of Object.entries(ESCENAS)) {
+  const b = document.createElement('button');
+  b.innerHTML = `<span>${esc.icono}</span>${esc.nombre}`;
+  b.onclick = () => cambiarEscena(clave);
+  b.dataset.clave = clave;
+  $('entornos').appendChild(b);
+}
+
+function svgSol(w, h) {
+  if (escena.marino) {
+    const id = uid();
+    return `<defs><radialGradient id="${id}" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#e8fbff" stop-opacity=".7"/><stop offset=".6" stop-color="#bdefff" stop-opacity="0"/></radialGradient></defs><ellipse cx="${w / 2}" cy="0" rx="${w * .6}" ry="${h * .45}" fill="url(#${id})"/>`;
+  }
+  const s = escena.sol, cx = s.x * w, cy = s.y * h, R = (s.r || 1) * Math.min(w, h) * .06, id = uid();
+  let rayos = '';
+  for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2, b = .09; rayos += `<polygon points="${f1(cx + Math.cos(a - b) * R * 1.3)},${f1(cy + Math.sin(a - b) * R * 1.3)} ${f1(cx + Math.cos(a) * R * 3.4)},${f1(cy + Math.sin(a) * R * 3.4)} ${f1(cx + Math.cos(a + b) * R * 1.3)},${f1(cy + Math.sin(a + b) * R * 1.3)}"/>`; }
+  return `<defs><radialGradient id="${id}"><stop offset="0" stop-color="${s.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${s.c}" stop-opacity=".35"/><stop offset="1" stop-color="${s.c}" stop-opacity="0"/></radialGradient></defs>
+    <circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(R * 5)}" fill="url(#${id})"/>
+    <g class="gira" style="transform-origin:${f1(cx)}px ${f1(cy)}px" fill="${s.c}" opacity=".35">${rayos}</g>
+    <circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(R)}" fill="${s.c}"/><circle cx="${f1(cx - R * .2)}" cy="${f1(cy - R * .2)}" r="${f1(R * .6)}" fill="#fff" opacity=".45"/>`;
+}
+
+function svgSuelo(w, h) {
+  const hz = escena.horizonte * h, [c1, c2] = escena.suelo, id = uid(), id2 = uid(), br = escena.bruma || '#fff';
+  let s = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
+    <linearGradient id="${id2}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${br}" stop-opacity=".6"/><stop offset="1" stop-color="${br}" stop-opacity="0"/></linearGradient></defs>
+    <rect x="0" y="${f1(hz)}" width="${w}" height="${f1(h - hz)}" fill="url(#${id})"/>`;
+  s += TEXTURAS[escena.textura](w, h, hz, semilla(escena.seed * 13));
+  s += `<rect x="0" y="${f1(hz)}" width="${w}" height="${f1((h - hz) * .3)}" fill="url(#${id2})"/>`;
+  return s;
+}
+
+function nuevaCapa(z, par, contenido, w, h) {
+  const div = document.createElement('div');
+  div.className = 'capa'; div.style.zIndex = z;
+  div.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${contenido}</svg>`;
+  escenaEl.appendChild(div);
+  capas.push({ el: div, par });
+}
+
+function construirFondo() {
+  capas.forEach(c => c.el.remove()); capas = [];
+  const w = W() + 120, h = H();
+  const cs = escena.cielo, hzp = escena.horizonte * 100;
+  escenaEl.style.background = `linear-gradient(to bottom, ${cs.map((c, i) => `${c} ${f1(i / (cs.length - 1) * hzp)}%`).join(', ')})`;
+  nuevaCapa(1, .04, svgSol(w, h), w, h);
+  escena.capas.forEach((c, i) => nuevaCapa(3 + i, .08 + i * .08, CAPAS[c.t](c, w, h, semilla(escena.seed * 100 + (c.seed || i))), w, h));
+  nuevaCapa(9, .4, svgSuelo(w, h), w, h);
+}
+
+function construirDecor() {
+  decor.forEach(o => o.el.remove()); decor = [];
+  const r = semilla(escena.seed * 7 + 3);
+  for (const [tipo, n, dr, sr, xs, op] of escena.decor) {
+    for (let i = 0; i < n; i++) {
+      let x;
+      if (xs === 'bordes') x = r() < .5 ? -.03 + r() * .12 : .91 + r() * .12;
+      else if (Array.isArray(xs)) x = xs[0] + r() * (xs[1] - xs[0]);
+      else x = -.03 + r() * 1.06;
+      const o = { x, d: dr[0] + r() * (dr[1] - dr[0]), s: sr[0] + r() * (sr[1] - sr[0]), flip: r() < .5, el: document.createElement('div') };
+      o.el.className = 'decor';
+      if (tipo === 'emoji') { o.emoji = true; o.el.textContent = op.e; }
+      else { const [w, h, svg] = ARTE[tipo](r, op || {}); o.w = w; o.h = h; o.el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%">${svg}</svg>`; }
+      escenaEl.appendChild(o.el); decor.push(o);
+    }
+  }
+  colocarDecor();
+}
+
+function colocarDecor() {
+  for (const o of decor) {
+    o.y = sueloY(o.d);
+    const alto = H() * o.s * escalaDe(o.d) / escalaDe(1);
+    if (o.emoji) o.el.style.fontSize = alto + 'px';
+    else { o.el.style.height = alto + 'px'; o.el.style.width = (alto * o.w / o.h) + 'px'; }
+    o.el.style.zIndex = 10 + Math.round(o.d * 100);
+    o.el.style.filter = bruma(Math.min(1, o.d));
+  }
+  camDecor = 1e9;
+}
+
+function moverDecor() {
+  if (Math.abs(cam - camDecor) < .3) return;
+  camDecor = cam;
+  for (const o of decor) o.el.style.transform = `translate(${f1(o.x * W() + cam * (.4 + .6 * o.d))}px, ${f1(o.y)}px) translate(-50%, -100%)${o.flip ? ' scaleX(-1)' : ''}`;
+  for (const c of capas) c.el.style.transform = `translateX(${f1(cam * c.par)}px)`;
+}
+
+function cambiarEscena(clave, inmediato) {
+  if (clave === claveEscena) return;
+  const velo = $('velo');
+  velo.style.opacity = 1;
+  setTimeout(() => {
+    claveEscena = clave; escena = ESCENAS[clave];
+    document.querySelectorAll('#entornos button').forEach(b => b.classList.toggle('activo', b.dataset.clave === clave));
+    animales.forEach(a => { a.el.remove(); a.sombra.remove(); }); animales = [];
+    construirFondo(); construirDecor(); iniciarAmbiente();
+    for (let i = 0; i < 3; i++) crearAnimal(true);
+    hablar(escena.art + ' ' + escena.nombre.toLowerCase());
+    velo.style.opacity = 0;
+  }, inmediato ? 0 : 400);
+}
+
+let tResize;
+window.addEventListener('resize', () => {
+  ajustarCanvas();
+  clearTimeout(tResize);
+  tResize = setTimeout(() => { if (!escena) return; construirFondo(); colocarDecor(); iniciarAmbiente(); animales.forEach(tamAnimal); }, 150);
+});
+
+// =====================================================================
+//  AMBIENTE (canvas): nubes, pájaros, nieve, burbujas, rayos de luz...
+// =====================================================================
+const cvF = $('cvFondo'), cvD = $('cvFrente'), ctxF = cvF.getContext('2d'), ctxD = cvD.getContext('2d');
+function ajustarCanvas() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  for (const [c, x] of [[cvF, ctxF], [cvD, ctxD]]) { c.width = W() * dpr; c.height = H() * dpr; c.style.width = W() + 'px'; c.style.height = H() + 'px'; x.setTransform(dpr, 0, 0, dpr, 0, 0); }
+}
+ajustarCanvas();
+
+const spritesNube = [0, 1, 2, 3].map(seed => {
+  const c = document.createElement('canvas'); c.width = 300; c.height = 130;
+  const g = c.getContext('2d'), r = semilla(seed + 5), bolas = [];
+  for (let i = 0; i < 10; i++) bolas.push([45 + r() * 210, 52 + r() * 22, 20 + r() * 25 * (1 - Math.abs(i / 10 - .5))]);
+  g.fillStyle = 'rgba(190,205,230,.9)'; bolas.forEach(([x, y, rr]) => { g.beginPath(); g.arc(x, y + 8, rr, 0, 7); g.fill(); });
+  g.fillStyle = '#fff'; bolas.forEach(([x, y, rr]) => { g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill(); });
+  return c;
+});
+const spriteNiebla = (() => {
+  const c = document.createElement('canvas'); c.width = 400; c.height = 400;
+  const g = c.getContext('2d'), gr = g.createRadialGradient(200, 200, 0, 200, 200, 200);
+  gr.addColorStop(0, 'rgba(255,255,255,.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 400, 400); return c;
+})();
+let polvo = [];
+
+function iniciarAmbiente() {
+  amb = {}; polvo = [];
+  const w = W(), h = H(), hz = escena.horizonte * h;
+  for (const ef of escena.efectos) {
+    const a = amb[ef] = [];
+    if (ef === 'nubes') for (let i = 0; i < 5; i++) a.push({ x: azar(-100, w), y: azar(.05, escena.horizonte - .2) * h, v: azar(6, 14), s: azar(.5, 1.1), spr: spritesNube[i % 4] });
+    if (ef === 'nieve') for (let i = 0; i < 150; i++) a.push({ x: azar(0, w), y: azar(0, h), r: azar(1, 3.5), v: azar(20, 60), f: azar(0, 9) });
+    if (ef === 'burbujas') for (let i = 0; i < 35; i++) a.push({ x: azar(0, w), y: azar(0, h), r: azar(2, 7), v: azar(20, 55), f: azar(0, 9) });
+    if (ef === 'rayos') for (let i = 0; i < 6; i++) a.push({ x: azar(0, w * 1.2), w: azar(30, 90), f: azar(0, 9) });
+    if (ef === 'motas' || ef === 'plancton' || ef === 'luciernagas') for (let i = 0; i < (ef === 'plancton' ? 60 : 30); i++) a.push({ x: azar(0, w), y: azar(ef === 'plancton' ? 0 : hz - h * .25, h), vx: azar(-10, 10), vy: azar(-8, 8), r: azar(1, ef === 'luciernagas' ? 3.5 : 2.5), f: azar(0, 9) });
+    if (ef === 'hojas') for (let i = 0; i < 14; i++) a.push(nuevaHoja(true));
+    if (ef === 'arena') for (let i = 0; i < 30; i++) a.push({ x: azar(0, w), y: azar(hz, h), l: azar(30, 120), v: azar(250, 500) });
+    if (ef === 'estrellas') for (let i = 0; i < 100; i++) a.push({ x: azar(0, w), y: azar(0, hz * .7), r: azar(.5, 1.8), f: azar(0, 9) });
+    if (ef === 'niebla' || ef === 'calor') for (let i = 0; i < 7; i++) a.push({ x: azar(-200, w), y: hz + azar(-h * .08, h * .05), v: azar(5, 15), s: azar(.8, 1.6) });
+  }
+}
+function nuevaHoja(inicio) {
+  const cols = claveEscena === 'bosque' ? ['#e65100', '#f57c00', '#ffb300', '#c62828'] : ['#43a047', '#66bb6a', '#2e7d32'];
+  return { x: azar(0, W()), y: inicio ? azar(0, H()) : -20, v: azar(25, 55), rot: azar(0, 6), vr: azar(-2, 2), f: azar(0, 9), s: azar(4, 8), c: elegir(cols) };
+}
+let bandada = null, proxBandada = 3;
+
+function dibujarAmbiente(dt, t) {
+  const w = W(), h = H(), hz = escena.horizonte * h;
+  ctxF.clearRect(0, 0, w, h); ctxD.clearRect(0, 0, w, h);
+  for (const ef in amb) {
+    const a = amb[ef];
+    if (ef === 'estrellas') {
+      ctxF.fillStyle = '#fff';
+      for (const s of a) { ctxF.globalAlpha = .3 + .7 * Math.abs(Math.sin(t * 1.3 + s.f)); ctxF.beginPath(); ctxF.arc(s.x + cam * .03, s.y, s.r, 0, 7); ctxF.fill(); }
+      ctxF.globalAlpha = 1;
+    }
+    if (ef === 'aurora') {
+      for (const [col, y0, amp, vel] of [['rgba(110,255,190,', .1, 30, .25], ['rgba(170,120,255,', .17, 22, -.18]]) {
+        const g = ctxF.createLinearGradient(0, 0, 0, 120); g.addColorStop(0, col + '0)'); g.addColorStop(.4, col + '.32)'); g.addColorStop(1, col + '0)');
+        ctxF.fillStyle = g;
+        for (let x = 0; x < w; x += 5) {
+          const y = y0 * h + Math.sin(x * .004 + t * vel) * amp + Math.sin(x * .011 - t * vel * 1.7) * amp * .5;
+          ctxF.globalAlpha = .55 + .45 * Math.sin(x * .02 + t * .8);
+          ctxF.save(); ctxF.translate(x, y); ctxF.fillRect(0, 0, 5, 120); ctxF.restore();
         }
-    </script>
-    <style>
-        body {
-            background-color: #0c0c0c;
-            overflow-x: hidden;
-            font-family: 'Inter', sans-serif;
+      }
+      ctxF.globalAlpha = 1;
+    }
+    if (ef === 'nubes') for (const n of a) {
+      n.x += n.v * dt; if (n.x > w + 50) { n.x = -320 * n.s; n.y = azar(.05, escena.horizonte - .2) * h; }
+      ctxF.globalAlpha = .92; ctxF.drawImage(n.spr, n.x + cam * .1, n.y, 300 * n.s, 130 * n.s); ctxF.globalAlpha = 1;
+    }
+    if (ef === 'superficie') {
+      ctxF.strokeStyle = 'rgba(255,255,255,.22)'; ctxF.lineWidth = 2;
+      for (let k = 0; k < 4; k++) { ctxF.beginPath(); for (let x = 0; x <= w; x += 12) { const y = 14 + k * 16 + Math.sin(x * .02 + t * 1.5 + k * 2) * 5 + Math.sin(x * .007 - t + k) * 4; x ? ctxF.lineTo(x, y) : ctxF.moveTo(x, y); } ctxF.stroke(); }
+    }
+    if (ef === 'pajaros') {
+      proxBandada -= dt;
+      if (!bandada && proxBandada < 0) {
+        const dir = Math.random() < .5 ? 1 : -1, n = 4 + Math.floor(Math.random() * 4), y = azar(.08, escena.horizonte - .25) * h;
+        bandada = { dir, v: azar(35, 55), aves: Array.from({ length: n }, (_, i) => ({ x: (dir > 0 ? -40 : w + 40) - dir * (Math.ceil(i / 2) * 22), y: y + Math.ceil(i / 2) * 10 * (i % 2 ? 1 : -1) * .6 + Math.ceil(i / 2) * 8, f: azar(0, 9) })) };
+      }
+      if (bandada) {
+        ctxF.strokeStyle = 'rgba(50,45,60,.65)'; ctxF.lineWidth = 1.8; ctxF.lineCap = 'round';
+        let fuera = true;
+        for (const p of bandada.aves) {
+          p.x += bandada.dir * bandada.v * dt; if (p.x > -60 && p.x < w + 60) fuera = false;
+          const ala = Math.sin(t * 9 + p.f) * 4;
+          ctxF.beginPath(); ctxF.moveTo(p.x - 7, p.y - ala); ctxF.quadraticCurveTo(p.x - 3, p.y - 2, p.x, p.y); ctxF.quadraticCurveTo(p.x + 3, p.y - 2, p.x + 7, p.y - ala); ctxF.stroke();
         }
-        .hero-bg-overlay {
-            background-image: linear-gradient(180deg, rgba(12, 12, 12, 0.3) 0%, rgba(12, 12, 12, 0.98) 100%), url('assets/hero_banner_clean.png');
-            background-size: cover;
-            background-position: center 20%;
-        }
-        .glow-green {
-            box-shadow: 0 0 35px rgba(0, 255, 137, 0.25);
-        }
-        .glow-red {
-            box-shadow: 0 0 35px rgba(255, 0, 0, 0.2);
-        }
-        .glow-gold {
-            box-shadow: 0 0 35px rgba(255, 215, 0, 0.2);
-        }
-        .text-glow-green {
-            text-shadow: 0 0 12px rgba(0, 255, 137, 0.5);
-        }
-        .text-glow-gold {
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
-        }
-        .text-glow-red {
-            text-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
-        }
-        .glass-panel {
-            backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(18, 18, 18, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-panel-hover:hover {
-            border-color: rgba(0, 255, 137, 0.4);
-            box-shadow: 0 0 30px rgba(0, 255, 137, 0.15);
-        }
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(0.5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.35; }
-            50% { opacity: 0.75; }
-        }
-        .animate-pulse-glow {
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0c0c0c;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #00ff89;
-        }
-        .flag-bg {
-            background: linear-gradient(180deg, #ff0000 0%, #ff0000 25%, #ffd700 25%, #ffd700 75%, #ff0000 75%, #ff0000 100%);
-        }
-        .ticker-wrap {
-            overflow: hidden;
-            background: rgba(10, 10, 10, 0.95);
-            border-top: 1px solid rgba(0, 255, 137, 0.15);
-            border-bottom: 1px solid rgba(0, 255, 137, 0.15);
-        }
-        .ticker {
-            display: flex;
-            white-space: nowrap;
-            animation: ticker-move 22s linear infinite;
-        }
-        @keyframes ticker-move {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-50%, 0, 0); }
-        }
-        .confetti-piece {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-            animation: confetti-fall 2.5s ease-out forwards;
-        }
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(220px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        @keyframes rain-gold {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-        .rain-gold-piece {
-            position: absolute;
-            width: 4px;
-            height: 12px;
-            background: #ffd700;
-            top: -20px;
-            z-index: 1;
-            animation: rain-gold 4s linear infinite;
-        }
-        .rain-red-piece {
-            position: absolute;
-            width: 4px;
-            height: 12px;
-            background: #ff0000;
-            top: -20px;
-            z-index: 1;
-            animation: rain-gold 5s linear infinite;
-        }
-        .hero-title-pulse {
-            animation: title-pulse 2s ease-in-out infinite;
-        }
-        @keyframes title-pulse {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4)); }
-            50% { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)); }
-        }
-    </style>
-    <script>
-        function createRain() {
-            const container = document.body;
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const piece = document.createElement('div');
-                    piece.className = Math.random() > 0.5 ? 'rain-gold-piece' : 'rain-red-piece';
-                    piece.style.left = Math.random() * 100 + 'vw';
-                    piece.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                    piece.style.opacity = Math.random();
-                    container.appendChild(piece);
-                }, i * 200);
-            }
-        }
-        window.addEventListener('DOMContentLoaded', createRain);
-    </script>
-<body class="custom-scrollbar text-white">
+        if (fuera) { bandada = null; proxBandada = azar(6, 14); }
+      }
+    }
+    if (ef === 'niebla' || ef === 'calor') {
+      ctxD.globalAlpha = ef === 'calor' ? .12 : .2;
+      for (const n of a) { n.x += n.v * dt; if (n.x > w + 100) n.x = -600 * n.s; ctxD.drawImage(spriteNiebla, n.x + cam * .3, n.y - 60 * n.s, 600 * n.s, 140 * n.s); }
+      ctxD.globalAlpha = 1;
+    }
+    if (ef === 'rayos') {
+      const g = ctxD.createLinearGradient(0, 0, 0, h * .9);
+      const c = escena.marino ? '220,250,255' : '255,245,200';
+      g.addColorStop(0, `rgba(${c},.5)`); g.addColorStop(1, `rgba(${c},0)`);
+      ctxD.fillStyle = g;
+      const inc = escena.marino ? -.25 : .45;
+      for (const r of a) {
+        ctxD.globalAlpha = .12 + .1 * Math.sin(t * .5 + r.f);
+        ctxD.beginPath(); ctxD.moveTo(r.x, 0); ctxD.lineTo(r.x + r.w, 0); ctxD.lineTo(r.x + r.w * 2.5 + inc * h, h * .9); ctxD.lineTo(r.x + inc * h, h * .9); ctxD.fill();
+      }
+      ctxD.globalAlpha = 1;
+    }
+    if (ef === 'nieve') {
+      ctxD.fillStyle = 'rgba(255,255,255,.9)'; ctxD.beginPath();
+      for (const s of a) {
+        s.y += s.v * dt; s.x += Math.sin(t + s.f) * 18 * dt;
+        if (s.y > h + 5) { s.y = -5; s.x = azar(0, w); }
+        ctxD.moveTo(s.x + s.r, s.y); ctxD.arc(s.x, s.y, s.r, 0, 7);
+      }
+      ctxD.fill();
+    }
+    if (ef === 'burbujas') {
+      ctxD.lineWidth = 1.5;
+      for (const b of a) {
+        b.y -= b.v * dt; b.x += Math.sin(t * 2 + b.f) * .5;
+        if (b.y < -10) { b.y = h + 10; b.x = azar(0, w); }
+        ctxD.strokeStyle = 'rgba(255,255,255,.55)'; ctxD.beginPath(); ctxD.arc(b.x, b.y, b.r, 0, 7); ctxD.stroke();
+        ctxD.fillStyle = 'rgba(255,255,255,.7)'; ctxD.beginPath(); ctxD.arc(b.x - b.r * .35, b.y - b.r * .35, b.r * .25, 0, 7); ctxD.fill();
+      }
+    }
+    if (ef === 'motas' || ef === 'plancton' || ef === 'luciernagas') {
+      const col = ef === 'luciernagas' ? '255,236,120' : ef === 'plancton' ? '230,250,255' : '255,250,210';
+      for (const m of a) {
+        m.vx += (Math.random() - .5) * 40 * dt; m.vy += (Math.random() - .5) * 40 * dt;
+        m.vx = limitar(m.vx, -20, 20); m.vy = limitar(m.vy, -15, 15);
+        m.x += m.vx * dt; m.y += m.vy * dt;
+        if (m.x < -10) m.x = w + 10; if (m.x > w + 10) m.x = -10; if (m.y < 0 || m.y > h) m.vy *= -1;
+        const al = ef === 'luciernagas' ? .35 + .65 * Math.max(0, Math.sin(t * 2 + m.f)) : .5 + .3 * Math.sin(t * 2 + m.f);
+        ctxD.fillStyle = `rgba(${col},${(al * .25).toFixed(3)})`; ctxD.beginPath(); ctxD.arc(m.x, m.y, m.r * 3.5, 0, 7); ctxD.fill();
+        ctxD.fillStyle = `rgba(${col},${al.toFixed(3)})`; ctxD.beginPath(); ctxD.arc(m.x, m.y, m.r, 0, 7); ctxD.fill();
+      }
+    }
+    if (ef === 'hojas') {
+      for (let i = 0; i < a.length; i++) {
+        const l = a[i];
+        l.y += l.v * dt; l.x += Math.sin(t * 1.5 + l.f) * 35 * dt; l.rot += l.vr * dt;
+        if (l.y > h + 20) a[i] = nuevaHoja(false);
+        ctxD.save(); ctxD.translate(l.x, l.y); ctxD.rotate(l.rot); ctxD.scale(1, Math.abs(Math.sin(t * 2 + l.f)) * .7 + .3);
+        ctxD.fillStyle = l.c; ctxD.beginPath(); ctxD.ellipse(0, 0, l.s, l.s * .5, 0, 0, 7); ctxD.fill(); ctxD.restore();
+      }
+    }
+    if (ef === 'arena') {
+      ctxD.strokeStyle = 'rgba(255,240,210,.35)'; ctxD.lineWidth = 1.2; ctxD.beginPath();
+      for (const s of a) { s.x += s.v * dt; if (s.x > w + 150) { s.x = -150; s.y = azar(hz, h); } ctxD.moveTo(s.x, s.y); ctxD.lineTo(s.x + s.l, s.y - 2); }
+      ctxD.stroke();
+    }
+  }
+  // polvo que levantan los animales al huir
+  const cp = escena.marino ? '255,255,255' : claveEscena === 'polo' ? '255,255,255' : '200,170,120';
+  for (let i = polvo.length - 1; i >= 0; i--) {
+    const p = polvo[i]; p.vida -= dt * 1.6; p.r += dt * 30; p.y -= dt * 10;
+    if (p.vida <= 0) { polvo.splice(i, 1); continue; }
+    ctxD.fillStyle = `rgba(${cp},${(p.vida * .45).toFixed(3)})`; ctxD.beginPath(); ctxD.arc(p.x, p.y, p.r, 0, 7); ctxD.fill();
+  }
+}
 
-    <header class="sticky top-0 w-full z-50 glass-panel border-b border-white/5">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg flag-bg flex items-center justify-between p-1.5 glow-gold">
-                    <div class="w-full h-full bg-black/80 rounded flex items-center justify-center">
-                        <i data-lucide="trophy" class="w-5 h-5 text-brandGold"></i>
-                    </div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-heading font-black text-xl tracking-tighter flex items-center gap-1 leading-none">
-                        <span class="text-brandRed">WORLD CUP </span><span class="text-brandGold">2026</span>
-                    </span>
-                    <span class="text-[9px] text-brandGreen font-bold tracking-widest uppercase">$SWINNER</span>
-                </div>
-            </div>
-            
-            <nav class="hidden md:flex items-center gap-4 lg:gap-8 text-sm font-semibold tracking-wide">
-                <a href="#about" class="hover:text-brandGreen transition-colors">ABOUT</a>
-                <a href="#tokenomics" class="hidden lg:inline hover:text-brandGreen transition-colors">TOKENOMICS</a>
-                <a href="#how-to-buy" class="hover:text-brandGreen transition-colors">BUY</a>
-                <a href="#schedule" class="hover:text-brandGreen transition-colors">MATCHES</a>
-                <a href="https://dexscreener.com/solana/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" class="hover:text-brandGreen transition-colors">CHART</a>
-                <a href="#roadmap" class="hover:text-brandGreen transition-colors font-bold text-brandGold">ROADMAP</a>
-            </nav>
+// =====================================================================
+//  ANIMALES
+// =====================================================================
+const ACCIONES = { suelo: ['mira', 'come', 'respira', 'salta', 'sienta', 'mira'], agua: ['respira', 'mira'], aire: ['respira'] };
 
-            <div class="flex items-center gap-2 md:gap-3">
-                <a href="https://x.com/DarKlinca" target="_blank" class="hidden lg:flex w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center hover:bg-brandGreen hover:text-black transition-all duration-300">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                </a>
-                <a href="https://t.me/+msoMKNt4BOpkOWU8" target="_blank" class="hidden lg:flex w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center hover:bg-brandGreen hover:text-black transition-all duration-300">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.54 3.65-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.88-1.69 6.46-2.8 7.74-3.33 3.68-1.53 4.44-1.8 4.94-1.81.11 0 .35.03.5.16.13.11.17.26.18.38-.01.07-.01.17-.02.22z"/>
-                    </svg>
-                </a>
-                <a href="https://pump.fun/coin/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" class="bg-brandGreen text-black font-extrabold text-xs px-4 py-2.5 md:px-5 md:py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 glow-green tracking-wider uppercase font-heading whitespace-nowrap">
-                    BUY ON PUMP
-                </a>
-                <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
-                    <i data-lucide="menu" id="menu-icon" class="w-5 h-5"></i>
-                </button>
-            </div>
-        </div>
+function tamAnimal(a) {
+  const b = tamBase();
+  a.el.style.fontSize = b + 'px';
+  a.sombra.style.width = b * .9 + 'px'; a.sombra.style.height = b * .2 + 'px';
+}
 
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[72px] z-50 bg-brandBg/95 backdrop-blur-xl border-t border-white/5 animate-in fade-in slide-in-from-top-4 duration-300">
-            <nav class="flex flex-col items-center justify-center h-full gap-8 text-2xl font-heading font-black tracking-widest uppercase">
-                <a href="#about" onclick="toggleMobileMenu()" class="text-white hover:text-brandGreen transition-colors">ABOUT</a>
-                <a href="#tokenomics" onclick="toggleMobileMenu()" class="text-white hover:text-brandGreen transition-colors">TOKENOMICS</a>
-                <a href="#how-to-buy" onclick="toggleMobileMenu()" class="text-white hover:text-brandGreen transition-colors">HOW TO BUY</a>
-                <a href="#schedule" onclick="toggleMobileMenu()" class="text-white hover:text-brandGreen transition-colors">MATCHES</a>
-                <a href="https://dexscreener.com/solana/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" onclick="toggleMobileMenu()" class="text-white hover:text-brandGreen transition-colors">LIVE CHART</a>
-                <a href="#roadmap" onclick="toggleMobileMenu()" class="text-white hover:text-brandGold transition-colors">ROADMAP</a>
-                
-                <div class="flex gap-6 mt-8">
-                    <a href="https://x.com/DarKlinca" target="_blank" class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brandGreen hover:text-black transition-all">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/+msoMKNt4BOpkOWU8" target="_blank" class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brandGreen hover:text-black transition-all">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.54 3.65-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.88-1.69 6.46-2.8 7.74-3.33 3.68-1.53 4.44-1.8 4.94-1.81.11 0 .35.03.5.16.13.11.17.26.18.38-.01.07-.01.17-.02.22z"/>
-                        </svg>
-                    </a>
-                </div>
-            </nav>
-        </div>
-        </div>
-    </header>
+function crearAnimal(dentro, T, extra = {}) {
+  T = T || elegir(escena.animales);
+  const el = document.createElement('div');
+  el.className = 'animal';
+  el.innerHTML = `<span class="burbuja"></span><span class="cuerpo">${T.e}</span><span class="nombre">${T.n}</span>`;
+  const sombra = document.createElement('div'); sombra.className = 'sombra';
+  if (T.t !== 'suelo') sombra.style.display = 'none';
+  const dir = extra.dir || (Math.random() < .5 ? 1 : -1);
+  const a = {
+    el, sombra, T, dir, cara: dir, cuerpo: el.querySelector('.cuerpo'), burbuja: el.querySelector('.burbuja'),
+    x: dentro ? azar(.15, .85) * W() : (dir === 1 ? -150 - (extra.off || 0) : W() + 150 + (extra.off || 0)),
+    d: extra.d ?? azar(.05, .8), dObj: azar(.1, .9), alt: azar(.1, .9), altObj: azar(.1, .9),
+    vel: extra.vel || T.v * azar(.85, 1.15), estado: 'pasea', tDec: azar(2, 5), fase: Math.random() * 10,
+    sem: Math.random() * 100, salto: 0, saltoAmp: 40, accion: null, tAcc: 0, filtro: -1, tPolvo: 0
+  };
+  a.vx = dentro ? 0 : a.dir * a.vel;
+  a.dObj = a.d;
+  el.addEventListener('pointerdown', ev => { ev.stopPropagation(); tocarAnimal(a); });
+  tamAnimal(a);
+  escenaEl.appendChild(sombra); escenaEl.appendChild(el);
+  animales.push(a);
+  return a;
+}
 
-    <main class="relative">
-        <section class="hero-bg-overlay min-h-[92vh] flex items-center relative py-12 lg:py-20 overflow-hidden">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(0,255,137,0.08)_0%,transparent_50%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(255,0,0,0.05)_0%,transparent_50%)]"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(255,215,0,0.06)_0%,transparent_40%)]"></div>
-            
-            <div class="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-7 flex flex-col items-start space-y-8">
-                    <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md">
-                        <span class="w-2.5 h-2.5 rounded-full bg-brandGreen animate-pulse"></span>
-                        <span class="text-xs font-bold tracking-widest text-brandGreen">WORLD CUP STARTS JUNE 12 - SPAIN TAKES THE TROPHY</span>
-                    </div>
+function aparecer() {
+  const T = elegir(escena.animales);
+  const a = crearAnimal(false, T);
+  if (T.manada && Math.random() < .65) {
+    const n = 1 + Math.floor(Math.random() * 2);
+    for (let i = 1; i <= n; i++) crearAnimal(false, T, { dir: a.dir, off: i * azar(90, 170), d: limitar(a.d + azar(-.18, .18), 0, 1), vel: a.vel * azar(.95, 1.05) });
+  }
+}
 
-                    <div class="space-y-4">
-                        <p class="text-brandGold text-lg font-bold tracking-[0.2em] uppercase hero-title-pulse">¡ESPAÑA CAMPEONA DEL MUNDO 2026!</p>
-                        <h1 class="font-heading font-extrabold text-6xl md:text-8xl tracking-tight uppercase leading-none">
-                            <span class="block text-white">WORLD CUP</span>
-                            <span class="block bg-gradient-to-r from-brandGold via-brandRed to-brandGold bg-clip-text text-transparent text-glow-gold">CHAMPIONS</span>
-                        </h1>
-                        <p class="text-xl md:text-2xl text-gray-300 max-w-xl font-light">
-                            $SWINNER — El memecoin oficial del Campeón. Ride the wave of glory as Spain takes the trophy.
-                        </p>
-                    </div>
+function quitar(a) { a.el.remove(); a.sombra.remove(); animales.splice(animales.indexOf(a), 1); }
 
-                    <div class="w-full max-w-lg glass-panel p-3.5 md:p-4 rounded-2xl flex items-center justify-between gap-3">
-                        <div class="flex flex-col min-w-0">
-                            <span class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider">Contract Address</span>
-                            <span id="ca-text" class="text-xs md:text-sm font-mono font-bold text-gray-200 mt-1 truncate">DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump</span>
-                        </div>
-                        <button onclick="copyCA()" class="bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-1.5 px-3 py-2 md:px-4 md:py-2.5 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold text-brandGold tracking-wider shrink-0">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span id="copy-btn-text">COPY CA</span>
-                        </button>
-                    </div>
+function bocadillo(a, txt, seg = 1.8) {
+  a.burbuja.textContent = txt;
+  a.burbuja.classList.remove('pop'); void a.burbuja.offsetWidth; a.burbuja.classList.add('pop');
+  clearTimeout(a.tBoc);
+  a.tBoc = setTimeout(() => { if (!a.fijo) a.burbuja.classList.remove('pop'); }, seg * 1000);
+}
 
-                    <div class="flex flex-wrap items-center gap-4 w-full">
-                        <a href="https://pump.fun/coin/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" class="flex-1 sm:flex-none relative group bg-brandGreen text-black font-extrabold font-heading text-base px-8 py-4 rounded-xl transition-all duration-300 text-center glow-green hover:brightness-110 tracking-wider">
-                            BUY ON PUMP.FUN
-                            <span class="absolute inset-0 bg-brandGreen opacity-0 group-hover:opacity-40 transition-opacity duration-300 rounded-xl blur-md -z-10"></span>
-                        </a>
-                        <a href="https://dexscreener.com/solana/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" class="flex-1 sm:flex-none bg-black/60 hover:bg-black/80 text-white border border-brandGold/30 hover:border-brandGold/60 font-bold text-base px-8 py-4 rounded-xl transition-all text-center tracking-wider font-heading text-glow-gold">
-                            VIEW LIVE CHART
-                        </a>
-                    </div>
+function tocarAnimal(a) {
+  if (a.estado === 'huye' || a.estado === 'sobresalto') return;
+  a.el.classList.add('nombrado');
+  a.salto = 1; a.saltoAmp = 45;
+  bocadillo(a, elegir(['❤️', '😊', '✨']));
+  hablar(a.T.n);
+  clearTimeout(a.tNombre);
+  a.tNombre = setTimeout(() => a.el.classList.remove('nombrado'), 2500);
+}
 
-                    <div class="flex flex-wrap items-center gap-6 pt-4 text-[10px] md:text-xs font-bold text-gray-500 tracking-wider">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="shield-check" class="text-brandGreen w-4 h-4"></i>
-                            <span>100% SAFE</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="lock" class="text-brandGold w-4 h-4"></i>
-                            <span>LP LOCKED</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="flame" class="text-brandRed w-4 h-4"></i>
-                            <span>0% TAX</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="check-circle" class="text-brandGreen w-4 h-4"></i>
-                            <span>RENOUNCED</span>
-                        </div>
-                    </div>
-                </div>
+function asustarTodos() {
+  for (const a of animales) {
+    if (a.estado === 'huye' || a.estado === 'sobresalto') continue;
+    a.estado = 'sobresalto'; a.tEst = .35; a.fijo = true;
+    a.dir = a.x < W() / 2 ? -1 : 1;
+    a.salto = 1; a.saltoAmp = 60;
+    a.dObj = 0;
+    if (a.T.t === 'aire') a.altObj = -1;
+    if (a.T.t === 'agua') a.altObj = Math.random() < .5 ? 0 : 1;
+    bocadillo(a, elegir(['😱', '❗', '💦']), 5);
+    a.el.classList.remove('nombrado');
+  }
+}
 
-                <div class="lg:col-span-5 flex justify-center relative">
-                    <div class="absolute -inset-4 bg-gradient-to-r from-brandRed via-brandGold to-brandGreen opacity-25 rounded-full blur-3xl animate-pulse-glow"></div>
-                    <div class="relative w-72 h-72 md:w-96 md:h-96 rounded-full border border-white/5 flex items-center justify-center p-8 bg-black/40 backdrop-blur-md">
-                        <div class="absolute inset-4 rounded-full border border-dashed border-brandGold/20 animate-spin" style="animation-duration: 20s"></div>
-                        <div class="absolute inset-8 rounded-full border border-dashed border-brandRed/20 animate-spin" style="animation-duration: 15s; animation-direction: reverse;"></div>
-                        <img src="assets/hero_banner_clean.png" alt="SPAINWINNER Mascot" class="relative max-h-full max-w-full object-contain animate-float drop-shadow-[0_0_50px_rgba(255,215,0,0.4)] z-10 rounded-full">
-                    </div>
-                </div>
-            </div>
-        </section>
+function decidir(a, confiados) {
+  const T = a.T, tipo = T.t;
+  a.tDec = azar(2.5, 6);
+  if (a.estado === 'pausa' || a.estado === 'curioso') { a.estado = 'pasea'; a.accion = null; a.dObj = confiados ? azar(.5, 1) : azar(0, .9); return; }
+  const r = Math.random();
+  if (tipo === 'aire') {
+    a.altObj = azar(0, 1); a.dObj = confiados ? azar(.4, 1) : azar(0, .9); a.planea = Math.random() < .4;
+    if (r < .2 && a.x > W() * .2 && a.x < W() * .8) a.dir *= -1;
+    return;
+  }
+  if (confiados && r < .3) {        // se acerca a mirar
+    a.estado = 'curioso'; a.dObj = azar(.85, 1); a.accion = 'respira'; a.tAcc = 0; a.tDec = azar(3, 5);
+    bocadillo(a, elegir(['❤️', '😊', '✨', '👀'])); return;
+  }
+  if (r < .45) {                     // se para a hacer algo
+    a.estado = 'pausa'; a.accion = elegir(T.acc || ACCIONES[tipo]); a.tAcc = 0; a.saltoHecho = false; a.tDec = azar(1.8, 4);
+    if (a.accion === 'duerme') { a.tDec = azar(3, 5); bocadillo(a, '💤', a.tDec); }
+    else if (Math.random() < .35) bocadillo(a, elegir(T.emo || ['🎵', '❤️', '✨']));
+    return;
+  }
+  if (r < .58 && a.x > W() * .2 && a.x < W() * .8) a.dir *= -1;   // se da la vuelta
+  a.dObj = confiados ? azar(.5, 1) : azar(0, .9);                   // se acerca o se aleja
+  if (tipo === 'agua') a.altObj = azar(0, 1);
+}
 
-        <!-- Live Chart Section -->
-        <section class="py-12 relative z-10 container mx-auto px-4">
-            <div class="text-center py-4 bg-yellow-500/10 border border-yellow-500/30 rounded-t-3xl">
-                <p class="text-yellow-400 text-sm font-bold">🚀 El pump acaba de empezar. ¡Sé de los primeros!</p>
-            </div>
-            <div class="glass-panel rounded-b-3xl overflow-hidden border border-white/10">
-                <div class="p-4 border-b border-white/10 flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="text-brandGreen animate-pulse">● LIVE</span>
-                        <span class="font-bold">$SWINNER / SOL</span>
-                    </div>
-                    <a href="https://dexscreener.com/solana/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump" target="_blank" class="text-brandGold hover:underline text-xs font-bold">Ver en DexScreener →</a>
-                </div>
-                <div class="h-[600px] w-full bg-black/20">
-                    <style>#dexscreener-embed{position:relative;width:100%;height:100%;}#dexscreener-embed iframe{position:absolute;width:100%;height:100%;top:0;left:0;border:0;}</style>
-                    <div id="dexscreener-embed"><iframe src="https://dexscreener.com/solana/DyPogmwof7M7yDbYdPyexzLhTDJ6K4dM2DL3vZMhpump?embed=1&theme=dark&trades=0&info=0"></iframe></div>
-                </div>
-            </div>
-        </section>
+function moverAnimal(a, dt, t, nervioso, confiados) {
+  const T = a.T, tipo = T.t, g = T.g || (tipo === 'aire' ? 'vuela' : tipo === 'agua' ? 'nada' : 'anda');
 
-        <section class="ticker-wrap py-4 z-20 relative">
-            <div class="ticker">
-                <div class="flex items-center gap-12 shrink-0">
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandGold">🏆 MARKET CAP:</span>
-                        <span id="ticker-mcap" class="text-white">$2.39K</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandGreen">📈 PRICE:</span>
-                        <span id="ticker-price" class="text-white">$0.00000239</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandRed">💸 24H VOLUME:</span>
-                        <span id="ticker-vol" class="text-white">$6</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider text-brandGold">
-                        🔥 SPAIN DOMINATES THE SPACE
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider text-brandGreen">
-                        🚀 $SWINNER TO THE MOON
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                </div>
-                <div class="flex items-center gap-12 shrink-0">
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandGold">🏆 MARKET CAP:</span>
-                        <span id="ticker-mcap-2" class="text-white">$2.39K</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandGreen">📈 PRICE:</span>
-                        <span id="ticker-price-2" class="text-white">$0.00000239</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider">
-                        <span class="text-brandRed">💸 24H VOLUME:</span>
-                        <span id="ticker-vol-2" class="text-white">$6</span>
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider text-brandGold">
-                        🔥 SPAIN DOMINATES THE SPACE
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                    <span class="flex items-center gap-2 font-heading font-extrabold text-sm tracking-wider text-brandGreen">
-                        🚀 $SWINNER TO THE MOON
-                    </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                </div>
-            </div>
-        </section>
+  // --- estado ---
+  if (a.estado === 'sobresalto') { a.tEst -= dt; if (a.tEst <= 0) a.estado = 'huye'; }
+  else if (a.estado !== 'huye') {
+    if (nervioso !== !!a.nerv) {
+      a.nerv = nervioso;
+      if (nervioso) { a.fijo = true; bocadillo(a, '❓', 99); a.dObj = Math.min(a.dObj, .2); if (a.estado !== 'pasea') { a.estado = 'pasea'; a.accion = null; } }
+      else { a.fijo = false; a.burbuja.classList.remove('pop'); }
+    }
+    a.tDec -= dt;
+    if (a.tDec <= 0 && !nervioso) decidir(a, confiados);
+    if (a.estado === 'pausa' || a.estado === 'curioso') a.tAcc += dt;
+  }
 
-        <section class="py-16 bg-black/40 border-y border-white/5 relative z-10">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-heading font-black text-white tracking-tight uppercase">THE HALL OF FAME</h2>
-                    <p class="text-brandGold text-sm font-bold tracking-widest mt-2 uppercase">Spain's Winning Legacy</p>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div class="text-center space-y-2 group">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-brandGold/10 border border-brandGold/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="trophy" class="text-brandGold w-8 h-8"></i>
-                        </div>
-                        <div class="text-2xl font-black font-heading text-white">1 WORLD CUP</div>
-                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">South Africa 2010</div>
-                    </div>
-                    <div class="text-center space-y-2 group">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-brandRed/10 border border-brandRed/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="award" class="text-brandRed w-8 h-8"></i>
-                        </div>
-                        <div class="text-2xl font-black font-heading text-white">4 EUROS</div>
-                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">1964, 2008, 2012, 2024</div>
-                    </div>
-                    <div class="text-center space-y-2 group">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-brandGreen/10 border border-brandGreen/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="globe" class="text-brandGreen w-8 h-8"></i>
-                        </div>
-                        <div class="text-2xl font-black font-heading text-white">NATIONS LEAGUE</div>
-                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Winners 2023</div>
-                    </div>
-                    <div class="text-center space-y-2 group">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-white/5 border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="medal" class="text-white w-8 h-8"></i>
-                        </div>
-                        <div class="text-2xl font-black font-heading text-white">OLYMPIC GOLD</div>
-                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Barcelona 1992</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // --- velocidad con aceleración suave ---
+  let vObj = 0;
+  if (a.estado === 'pasea') vObj = a.vel * (nervioso ? .3 : 1);
+  else if (a.estado === 'huye') vObj = a.vel * 2.5 + 280;
+  if (tipo === 'aire' && a.estado !== 'huye' && a.estado !== 'sobresalto') vObj = Math.max(vObj, a.vel * .6);
+  a.vx += (a.dir * vObj - a.vx) * Math.min(1, dt * (a.estado === 'huye' ? 4 : 1.6));
+  a.x += a.vx * dt;
 
-        <section id="about" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-                <div class="lg:col-span-6 space-y-6">
-                    <span class="text-xs font-extrabold tracking-widest text-brandGold uppercase border border-brandGold/20 px-4 py-1.5 rounded-full bg-brandGold/5 inline-block">The Champion's Mindset</span>
-                    <h2 class="text-4xl md:text-5xl font-heading font-bold uppercase tracking-tight">
-                        VAMOS! <span class="bg-gradient-to-r from-brandGold to-brandRed bg-clip-text text-transparent">ROAD TO WORLD CUP 2026</span>
-                    </h2>
-                    <p class="text-lg text-gray-300 leading-relaxed font-light">
-                        Spain doesn't just play; we win. With a legacy of 1 World Cup and 4 European titles, we are the ultimate football powerhouse.
-                    </p>
-                    <p class="text-gray-400 leading-relaxed text-sm">
-                        From football championships to court battles, Spanish passion is fueled by victory. We created <span class="text-brandGold font-bold">$SWINNER</span> to tokenize this unstoppable energy and let community members rise as true crypto champions. No taxes, locked liquidity, and raw meme power.
-                    </p>
-                    <div class="pt-4 flex flex-col sm:flex-row gap-6">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-brandRed/10 border border-brandRed/20 flex items-center justify-center shrink-0">
-                                <i data-lucide="crown" class="text-brandRed w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white font-heading">CHAMPION LEADERSHIP</h4>
-                                <p class="text-xs text-gray-400 mt-1">Run by sports fanatics and professional crypto marketers.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-brandGold/10 border border-brandGold/20 flex items-center justify-center shrink-0">
-                                <i data-lucide="users" class="text-brandGold w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white font-heading">COMMUNITY DRIVEN</h4>
-                                <p class="text-xs text-gray-400 mt-1">Built organically on trust, memes, and Spanish glory.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  const vd = a.estado === 'huye' ? .8 : .18;
+  a.d += limitar(a.dObj - a.d, -vd * dt, vd * dt);
+  const va = a.estado === 'huye' ? 1.3 : .15;
+  a.alt += limitar(a.altObj - a.alt, -va * dt, va * dt);
 
-                <div class="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-panel p-6 rounded-2xl border-white/5 space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="text-xs text-brandGold font-bold tracking-widest font-heading">EURO CHAMPIONS</div>
-                            <i data-lucide="award" class="text-brandGold w-5 h-5"></i>
-                        </div>
-                        <div class="text-3xl font-extrabold font-heading">4X WINNERS</div>
-                        <p class="text-xs text-gray-400">Total dominance in European football, crushing the competition with elite play style.</p>
-                    </div>
+  let caraObj = a.dir;
+  if (a.estado === 'pausa' && a.accion === 'mira' && (a.tAcc % 1.8) > .9) caraObj = -a.dir;
+  a.cara += limitar(caraObj - a.cara, -dt * 7, dt * 7);
+  const lado = a.cara >= 0 ? 1 : -1;
 
-                    <div class="glass-panel p-6 rounded-2xl border-white/5 space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="text-xs text-brandRed font-bold tracking-widest font-heading">COURT VICTORIES</div>
-                            <i data-lucide="sword" class="text-brandRed w-5 h-5"></i>
-                        </div>
-                        <div class="text-3xl font-extrabold font-heading">UNSTOPPABLE</div>
-                        <p class="text-xs text-gray-400">Legends born on clay and grass. Spanish fighting spirit lives in our DNA.</p>
-                    </div>
+  if (a.x < -300 || a.x > W() + 300 || (tipo === 'aire' && a.alt < -.8)) { quitar(a); return; }
 
-                    <div class="glass-panel p-6 rounded-2xl border-white/5 space-y-4 col-span-1 md:col-span-2 relative overflow-hidden group">
-                        <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-brandGreen/5 rounded-full blur-2xl group-hover:bg-brandGreen/10 transition-colors"></div>
-                        <div class="flex justify-between items-start">
-                            <div class="text-xs text-brandGreen font-bold tracking-widest font-heading">SWINNER UTILITY</div>
-                            <i data-lucide="zap" class="text-brandGreen w-5 h-5"></i>
-                        </div>
-                        <div class="text-2xl font-bold font-heading">THE PURE MEME WIN CONDITION</div>
-                        <p class="text-xs text-gray-400">We don't promise fake utility. We promise authentic Spanish sport hype, high-speed community trends, and community takeover.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // --- animación del cuerpo ---
+  const sp = Math.min(1.6, Math.abs(a.vx) / Math.max(25, a.vel));
+  const m = Math.min(1, sp);
+  const esc = escalaDe(a.d) * (T.s || 1);
+  let bob = 0, rot = 0, sx = 1, sy = 1, skew = 0, y;
+  const [y0, y1] = zona(tipo);
 
-        <section id="tokenomics" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-brandGreen/5 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
-            
-            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-                <span class="text-xs font-extrabold tracking-widest text-brandGreen uppercase border border-brandGreen/20 px-4 py-1.5 rounded-full bg-brandGreen/5 inline-block">The Winning Strategy</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-black uppercase tracking-tight">TOKENOMICS</h2>
-                <p class="text-gray-400 font-light">Fair, transparent, and completely optimized for maximum victory laps.</p>
-            </div>
+  if (tipo === 'suelo') {
+    y = sueloY(a.d);
+    if (sp > .03) a.fase += dt * (g === 'brinca' ? 1.5 + sp * 5 : g === 'lento' ? 1 + sp * 2 : 2 + sp * 9) * (g === 'trota' ? 1.25 : 1);
+    if (g === 'anda') { bob = -Math.abs(Math.sin(a.fase)) * 7 * m; rot = Math.sin(a.fase * 2) * 3 * m; }
+    else if (g === 'trota') { bob = -Math.abs(Math.sin(a.fase)) * 14 * m; rot = -Math.cos(a.fase * 2) * 4 * m * lado; }
+    else if (g === 'brinca') {
+      const s = Math.sin(a.fase);
+      if (s > 0) { bob = -s * 34 * m; rot = -Math.cos(a.fase) * 12 * m * lado; sy = 1 + .06 * s * m; sx = 1 - .04 * s * m; }
+      else { sy = 1 + .1 * s * m; sx = 1 - .08 * s * m; }
+    }
+    else if (g === 'repta') { sx = 1 + .07 * Math.sin(a.fase * 2) * m; sy = 1 - .05 * Math.sin(a.fase * 2) * m; rot = Math.sin(a.fase) * 2 * m; }
+    else if (g === 'contonea') { rot = Math.sin(a.fase) * 12 * m; bob = -Math.abs(Math.sin(a.fase)) * 4 * m; }
+    else if (g === 'lento') { rot = Math.sin(a.fase) * 4 * m; bob = -Math.abs(Math.sin(a.fase)) * 2 * m; }
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="glass-panel rounded-3xl p-8 text-center space-y-6 glass-panel-hover transition-all duration-300 relative group overflow-hidden glow-gold">
-                    <div class="absolute top-0 left-0 w-full h-1.5 bg-brandGold"></div>
-                    <div class="w-16 h-16 rounded-2xl bg-brandGold/10 border border-brandGold/20 flex items-center justify-center mx-auto transition-transform group-hover:scale-110 duration-300">
-                        <i data-lucide="coins" class="text-brandGold w-8 h-8"></i>
-                    </div>
-                    <div class="space-y-2">
-                        <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest">TOTAL SUPPLY</h3>
-                        <p class="text-3xl font-heading font-extrabold text-white">1,000,000,000</p>
-                        <p class="text-brandGold text-xs font-bold tracking-wider">1 BILLION $SWINNER</p>
-                    </div>
-                </div>
+    if (a.estado === 'pausa' || a.estado === 'curioso') {
+      const ta = a.tAcc;
+      if (a.accion === 'come') { rot = (16 + Math.sin(ta * 7) * 4) * lado * Math.min(1, ta * 3); bob = 2; }
+      else if (a.accion === 'sienta' || a.accion === 'duerme') { const k = Math.min(1, ta * 4); sy = 1 - .1 * k + (a.accion === 'duerme' ? Math.sin(ta * 2) * .02 : 0); sx = 1 + .06 * k; }
+      else if (a.accion === 'salta' && !a.saltoHecho) { a.salto = 1; a.saltoAmp = 40; a.saltoHecho = true; }
+      else if (a.accion === 'rasca') rot = Math.sin(ta * 14) * 4;
+      sy *= 1 + .02 * Math.sin(t * 3 + a.sem);
+    }
+    if (a.estado === 'huye' || a.estado === 'sobresalto') {
+      a.tPolvo -= dt;
+      if (a.tPolvo < 0 && a.estado === 'huye') { a.tPolvo = .05; polvo.push({ x: a.x + cam * (.4 + .6 * a.d) - a.dir * 25 * esc, y: y - 4, r: 4 + 6 * esc, vida: 1 }); }
+    }
+  } else if (tipo === 'aire') {
+    y = (y0 + a.alt * (y1 - y0)) * H() + Math.sin(t * 1.7 + a.sem) * 12;
+    const subir = a.alt - a.altObj;
+    rot = -limitar(subir * 40, -18, 18) * lado;
+    if (g === 'revolotea') { y += Math.sin(t * 6 + a.sem) * 10 + Math.sin(t * 2.3 + a.sem) * 18; sy = 1 - .5 * Math.abs(Math.sin(t * 18 + a.sem)); rot += Math.sin(t * 3 + a.sem) * 8; }
+    else {
+      const huyendo = a.estado === 'huye' || a.estado === 'sobresalto';
+      if (!a.planea || huyendo || Math.abs(subir) > .1) a.fase += dt * (huyendo ? 22 : 12);
+      sy = 1 - .25 * Math.abs(Math.sin(a.fase));
+    }
+  } else {   // agua
+    y = (y0 + a.alt * (y1 - y0)) * H() + Math.sin(t * 1.1 + a.sem) * 10 * (g === 'pulsa' ? 2 : 1);
+    const subir = a.alt - a.altObj;
+    if (g === 'pulsa') { const p = Math.sin(t * 3 + a.sem); sy = 1 + .14 * p; sx = 1 - .09 * p; y -= Math.max(0, p) * 8; }
+    else { a.fase += dt * (3 + sp * 9); skew = Math.sin(a.fase) * 5 * (.4 + m); rot = -limitar(subir * 40, -15, 15) * lado + Math.cos(t * 1.1 + a.sem) * 3; }
+  }
 
-                <div class="glass-panel rounded-3xl p-8 text-center space-y-6 glass-panel-hover transition-all duration-300 relative group overflow-hidden glow-red">
-                    <div class="absolute top-0 left-0 w-full h-1.5 bg-brandRed"></div>
-                    <div class="w-16 h-16 rounded-2xl bg-brandRed/10 border border-brandRed/20 flex items-center justify-center mx-auto transition-transform group-hover:scale-110 duration-300">
-                        <i data-lucide="percentage" class="text-brandRed w-8 h-8"></i>
-                    </div>
-                    <div class="space-y-2">
-                        <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest">TRANSACTION TAX</h3>
-                        <p class="text-3xl font-heading font-extrabold text-white">0% BUY / SELL</p>
-                        <p class="text-brandRed text-xs font-bold tracking-wider">ZERO SLIPPAGE NEEDED</p>
-                    </div>
-                </div>
+  if (a.salto > 0) { bob -= Math.sin(a.salto * Math.PI) * a.saltoAmp; a.salto = Math.max(0, a.salto - dt * 2.4); }
 
-                <div class="glass-panel rounded-3xl p-8 text-center space-y-6 glass-panel-hover transition-all duration-300 relative group overflow-hidden glow-green">
-                    <div class="absolute top-0 left-0 w-full h-1.5 bg-brandGreen"></div>
-                    <div class="w-16 h-16 rounded-2xl bg-brandGreen/10 border border-brandGreen/20 flex items-center justify-center mx-auto transition-transform group-hover:scale-110 duration-300">
-                        <i data-lucide="flame" class="text-brandGreen w-8 h-8"></i>
-                    </div>
-                    <div class="space-y-2">
-                        <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest">LIQUIDITY STATUS</h3>
-                        <p class="text-3xl font-heading font-extrabold text-white">100% BURNT</p>
-                        <p class="text-brandGreen text-xs font-bold tracking-wider">LP PERMANENTLY LOCKED</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // --- dibujar ---
+  const px = a.x + cam * (.4 + .6 * a.d);
+  a.el.style.transform = `translate(${f1(px)}px, ${f1(y + bob * esc)}px) translate(-50%, -100%) scale(${esc.toFixed(3)}) rotate(${f1(rot)}deg)`;
+  a.cuerpo.style.transform = `scale(${(-a.cara * sx).toFixed(3)}, ${sy.toFixed(3)}) skewY(${f1(skew)}deg)`;
+  a.el.style.zIndex = 10 + Math.round(a.d * 100);
+  const fb = Math.round(a.d * 10);
+  if (fb !== a.filtro) { a.filtro = fb; a.el.style.filter = bruma(fb / 10); }
+  if (tipo === 'suelo') {
+    const alto = Math.min(1, -bob / 70);
+    a.sombra.style.transform = `translate(${f1(px)}px, ${f1(y)}px) translate(-50%, -50%) scale(${(esc * (1 - alto * .4)).toFixed(3)})`;
+    a.sombra.style.opacity = (.8 * (1 - alto * .6)).toFixed(2);
+    a.sombra.style.zIndex = 9 + Math.round(a.d * 100);
+  }
+}
 
-        <section id="how-to-buy" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-                <span class="text-xs font-extrabold tracking-widest text-brandGreen uppercase border border-brandGreen/20 px-4 py-1.5 rounded-full bg-brandGreen/5 inline-block">Start Your Journey</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-black uppercase tracking-tight">HOW TO BUY</h2>
-                <p class="text-gray-400 font-light">Join the champions in 4 simple steps. Victory is only a few clicks away.</p>
-            </div>
+// =====================================================================
+//  BUCLE PRINCIPAL
+// =====================================================================
+let ultimo = performance.now(), ultimoMsg = '';
+window.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { camObj = (.5 - e.clientX / W()) * 50; ultimoRaton = performance.now(); } });
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:border-brandGreen/40 transition-all">
-                    <div class="absolute -right-4 -top-4 text-8xl font-black text-white/5 group-hover:text-brandGreen/10 transition-colors">1</div>
-                    <div class="w-12 h-12 rounded-2xl bg-brandGreen/10 flex items-center justify-center mb-6">
-                        <i data-lucide="wallet" class="text-brandGreen w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 font-heading">CREATE WALLET</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Download Phantom or your wallet of choice from the app store or as a browser extension.</p>
-                </div>
+function bucle(ahora) {
+  const dt = Math.min(.05, (ahora - ultimo) / 1000); ultimo = ahora;
+  const t = ahora / 1000;
+  if (!escena) { requestAnimationFrame(bucle); return; }
 
-                <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:border-brandGold/40 transition-all">
-                    <div class="absolute -right-4 -top-4 text-8xl font-black text-white/5 group-hover:text-brandGold/10 transition-colors">2</div>
-                    <div class="w-12 h-12 rounded-2xl bg-brandGold/10 flex items-center justify-center mb-6">
-                        <i data-lucide="arrow-down-circle" class="text-brandGold w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 font-heading">GET SOME SOL</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Have SOL in your wallet to switch to $SWINNER. If you don't have any, you can buy SOL direct on Phantom.</p>
-                </div>
+  leerMicro(ahora);
+  ruido *= Math.pow(.25, dt);
+  if (ruido > UMBRAL_NERVIO) calmaDesde = ahora;
+  if (ruido > UMBRAL_SUSTO) { asustarTodos(); asustadosHasta = ahora + 3500; }
+  const nervioso = ruido > UMBRAL_NERVIO;
+  const confiados = ahora - calmaDesde > 6000;
 
-                <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:border-brandRed/40 transition-all">
-                    <div class="absolute -right-4 -top-4 text-8xl font-black text-white/5 group-hover:text-brandRed/10 transition-colors">3</div>
-                    <div class="w-12 h-12 rounded-2xl bg-brandRed/10 flex items-center justify-center mb-6">
-                        <i data-lucide="shopping-cart" class="text-brandRed w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 font-heading">GO TO PUMP.FUN</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Visit pump.fun and connect your wallet. Paste the $SWINNER contract address to find the token.</p>
-                </div>
+  let msg;
+  if (ahora < asustadosHasta) msg = '😱 ¡Mucho ruido! Se han escondido...';
+  else if (nervioso) msg = '👀 Shhh... están nerviosos';
+  else if (confiados) msg = '😊 ¡Qué silencio! Se acercan';
+  else msg = '🤫 Silencio... ¡vienen los animales!';
+  if (msg !== ultimoMsg) { $('mensaje').textContent = msg; $('mensaje').classList.toggle('alerta', ahora < asustadosHasta); ultimoMsg = msg; }
+  $('nivel').style.width = Math.min(100, ruido * 100) + '%';
+  $('nivel').style.background = ruido > UMBRAL_SUSTO ? '#e53935' : nervioso ? '#ffa726' : '#66bb6a';
+  $('cara').textContent = ruido > UMBRAL_SUSTO ? '😱' : nervioso ? '😮' : '🙂';
 
-                <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:border-brandGreen/40 transition-all">
-                    <div class="absolute -right-4 -top-4 text-8xl font-black text-white/5 group-hover:text-brandGreen/10 transition-colors">4</div>
-                    <div class="w-12 h-12 rounded-2xl bg-brandGreen/10 flex items-center justify-center mb-6">
-                        <i data-lucide="refresh-cw" class="text-brandGreen w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 font-heading">SWAP FOR $SWINNER</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">Switch SOL for $SWINNER. We have 0% taxes so you don't need to worry about slippage!</p>
-                </div>
-            </div>
-        </section>
+  // cámara: sigue al ratón, o se mece sola
+  if (ahora - ultimoRaton > 4000) camObj = Math.sin(t / 9) * 18;
+  cam += (camObj - cam) * Math.min(1, dt * 2.5);
+  moverDecor();
 
-        <section id="simulator" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="glass-panel rounded-[32px] p-8 md:p-12 max-w-4xl mx-auto border-brandGreen/20 relative overflow-hidden">
-                <div class="absolute -top-32 -right-32 w-64 h-64 bg-brandGreen/10 rounded-full blur-3xl animate-pulse-glow"></div>
-                <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-brandRed/10 rounded-full blur-3xl animate-pulse-glow"></div>
-                
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
-                    <div>
-                        <span class="text-brandGold text-xs font-extrabold tracking-widest uppercase border border-brandGold/30 px-3 py-1 rounded-full bg-brandGold/5 inline-block">Interactive Game</span>
-                        <h2 class="text-3xl md:text-4xl font-bold font-heading mt-4 text-glow-green">VICTORY PUMP SIMULATOR</h2>
-                        <p class="text-gray-400 text-sm mt-2">Simulate massive pumps. Let's see how high $SWINNER can go!</p>
-                    </div>
-                    <div class="bg-black/50 border border-white/5 rounded-2xl p-4 md:text-right shrink-0">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">SIMULATED $SWINNER PRICE</div>
-                        <div id="sim-price" class="text-2xl md:text-3xl font-black text-brandGreen font-heading tracking-tight mt-1 text-glow-green">$0.00000239</div>
-                        <div id="sim-change" class="text-xs text-brandGreen font-bold tracking-wider mt-1">+0.00% (BASE LEVEL)</div>
-                    </div>
-                </div>
+  const activos = animales.filter(a => a.estado !== 'huye' && a.estado !== 'sobresalto').length;
+  if (ahora > asustadosHasta && !nervioso && activos < MAX_ANIMALES && Math.random() < dt * (confiados ? .9 : .45)) aparecer();
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-black/50 border border-white/5 rounded-2xl p-5 text-center flex flex-col justify-center">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">TOTAL PUMP CLICKS</div>
-                        <div id="total-pumps" class="text-3xl font-black text-brandGold font-heading mt-1">0</div>
-                    </div>
-                    <div class="bg-black/50 border border-white/5 rounded-2xl p-5 text-center flex flex-col justify-center">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">SIMULATED MARKET CAP</div>
-                        <div id="sim-mcap" class="text-3xl font-black text-white font-heading mt-1">$2.39K</div>
-                    </div>
-                    <div class="bg-black/50 border border-white/5 rounded-2xl p-5 text-center flex flex-col justify-center">
-                        <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">CHAMPIONSHIP LEVEL</div>
-                        <div id="pump-level" class="text-3xl font-black text-brandRed font-heading mt-1">ROOKIE</div>
-                    </div>
-                </div>
+  for (const a of [...animales]) moverAnimal(a, dt, t, nervioso, confiados);
+  dibujarAmbiente(dt, t);
+  requestAnimationFrame(bucle);
+}
 
-                <div class="bg-black/70 rounded-3xl p-6 border border-white/5 mb-10 h-64 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,137,0.03)_0%,transparent_70%)] pointer-events-none"></div>
-                    <svg id="chart-svg" class="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#00ff89" stop-opacity="0.3"></stop>
-                                <stop offset="100%" stop-color="#00ff89" stop-opacity="0"></stop>
-                            </linearGradient>
-                        </defs>
-                        <path id="chart-area" d="M 0 130 L 0 130 Z" fill="url(#chart-grad)"></path>
-                        <path id="chart-line" d="M 0 130" fill="none" stroke="#00ff89" stroke-width="3" stroke-linecap="round"></path>
-                    </svg>
-                    <div id="floating-memes" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-                </div>
+// =====================================================================
+//  RUIDO: micrófono, botón y barra espaciadora
+// =====================================================================
+let analizador = null, datos = null;
+$('btnMic').onclick = async () => {
+  if (analizador) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    analizador = ctx.createAnalyser(); analizador.fftSize = 1024;
+    datos = new Float32Array(analizador.fftSize);
+    ctx.createMediaStreamSource(stream).connect(analizador);
+    $('btnMic').textContent = '🎤 Escuchando'; $('btnMic').classList.add('on');
+  } catch (e) {
+    alert('No se ha podido usar el micrófono. Podéis usar el botón "¡Ruido!" o la barra espaciadora.');
+  }
+};
+function leerMicro(ahora) {
+  if (!analizador || ahora < ignorarMicHasta) return;
+  analizador.getFloatTimeDomainData(datos);
+  let suma = 0;
+  for (let i = 0; i < datos.length; i++) suma += datos[i] * datos[i];
+  const nivel = Math.min(1.2, Math.sqrt(suma / datos.length) * +$('sens').value * 2.5);
+  if (nivel > ruido) ruido = nivel;
+}
+function hacerRuido() { ruido = Math.min(1.2, ruido + .45); }
+$('btnPalmada').onclick = hacerRuido;
+window.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); hacerRuido(); } });
 
-                <div class="flex flex-col items-center gap-4">
-                    <button id="pump-btn" onclick="triggerPump()" class="relative group bg-brandGreen text-black font-extrabold font-heading text-lg px-12 py-5 rounded-2xl transition-all duration-300 transform active:scale-95 glow-green hover:brightness-110 tracking-widest uppercase">
-                        <span class="relative z-10 flex items-center gap-3">
-                            <i data-lucide="zap" class="fill-current animate-bounce w-5 h-5"></i>
-                            SIUUU PUMP!
-                        </span>
-                        <span class="absolute inset-0 bg-gradient-to-r from-brandGold via-brandGreen to-brandGold opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-lg -z-10"></span>
-                    </button>
-                    <p class="text-xs text-gray-500 tracking-wide">Click to launch simulated victory, spawn memes, and shoot confetti!</p>
-                </div>
-            </div>
-        </section>
+// =====================================================================
+//  VOZ
+// =====================================================================
+function hablar(texto) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'es-ES'; u.rate = .9; u.pitch = 1.2;
+  ignorarMicHasta = performance.now() + 2000;
+  speechSynthesis.speak(u);
+}
 
-        <section id="schedule" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-                <span class="text-xs font-extrabold tracking-widest text-brandRed uppercase border border-brandRed/20 px-4 py-1.5 rounded-full bg-brandRed/5 inline-block">The Road to the Final</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-black uppercase tracking-tight">MATCH SCHEDULE</h2>
-                <p class="text-gray-400 font-light">Spain's journey to the third star begins in North America. Mark your calendars.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <!-- Match 1 -->
-                <div class="glass-panel rounded-3xl p-6 border-brandGold/20 relative group hover:scale-[1.02] transition-all duration-300">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-[10px] font-bold text-brandGold tracking-widest uppercase">GROUP STAGE - MATCH 1</span>
-                        <span class="bg-brandGreen/10 text-brandGreen text-[9px] px-2 py-1 rounded-md font-bold">LIVE SOON</span>
-                    </div>
-                    <div class="flex items-center justify-around gap-4 mb-6">
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full flag-bg p-1 mb-2 mx-auto">
-                                <div class="w-full h-full bg-black rounded-full flex items-center justify-center font-black text-xs">ESP</div>
-                            </div>
-                            <span class="text-sm font-bold font-heading">SPAIN</span>
-                        </div>
-                        <div class="text-2xl font-black text-gray-500 font-heading">VS</div>
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full bg-white/10 border border-white/10 p-1 mb-2 mx-auto flex items-center justify-center">
-                                <i data-lucide="help-circle" class="w-8 h-8 text-gray-500"></i>
-                            </div>
-                            <span class="text-sm font-bold font-heading">TBD</span>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-white/5">
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-brandGold"></i>
-                            <span>June 12, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandRed"></i>
-                            <span>MetLife Stadium, NY/NJ</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Match 2 -->
-                <div class="glass-panel rounded-3xl p-6 border-white/5 relative group hover:scale-[1.02] transition-all duration-300">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-[10px] font-bold text-gray-500 tracking-widest uppercase">GROUP STAGE - MATCH 2</span>
-                    </div>
-                    <div class="flex items-center justify-around gap-4 mb-6">
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full flag-bg p-1 mb-2 mx-auto">
-                                <div class="w-full h-full bg-black rounded-full flex items-center justify-center font-black text-xs">ESP</div>
-                            </div>
-                            <span class="text-sm font-bold font-heading">SPAIN</span>
-                        </div>
-                        <div class="text-2xl font-black text-gray-500 font-heading">VS</div>
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full bg-white/10 border border-white/10 p-1 mb-2 mx-auto flex items-center justify-center">
-                                <i data-lucide="help-circle" class="w-8 h-8 text-gray-500"></i>
-                            </div>
-                            <span class="text-sm font-bold font-heading">TBD</span>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-white/5">
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-brandGold"></i>
-                            <span>June 18, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandRed"></i>
-                            <span>Hard Rock Stadium, Miami</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Match 3 -->
-                <div class="glass-panel rounded-3xl p-6 border-white/5 relative group hover:scale-[1.02] transition-all duration-300">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-[10px] font-bold text-gray-500 tracking-widest uppercase">GROUP STAGE - MATCH 3</span>
-                    </div>
-                    <div class="flex items-center justify-around gap-4 mb-6">
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full flag-bg p-1 mb-2 mx-auto">
-                                <div class="w-full h-full bg-black rounded-full flex items-center justify-center font-black text-xs">ESP</div>
-                            </div>
-                            <span class="text-sm font-bold font-heading">SPAIN</span>
-                        </div>
-                        <div class="text-2xl font-black text-gray-500 font-heading">VS</div>
-                        <div class="text-center">
-                            <div class="w-16 h-16 rounded-full bg-white/10 border border-white/10 p-1 mb-2 mx-auto flex items-center justify-center">
-                                <i data-lucide="help-circle" class="w-8 h-8 text-gray-500"></i>
-                            </div>
-                            <span class="text-sm font-bold font-heading">TBD</span>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-white/5">
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-brandGold"></i>
-                            <span>June 24, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandRed"></i>
-                            <span>SoFi Stadium, Los Angeles</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Meme Gallery Section -->
-        <section id="gallery" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-                <span class="text-xs font-extrabold tracking-widest text-brandGold uppercase border border-brandGold/20 px-4 py-1.5 rounded-full bg-brandGold/5 inline-block">Meme Champions</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-black uppercase tracking-tight">MEME GALLERY</h2>
-                <p class="text-gray-400 font-light">The energy that fuels the winning streak.</p>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_1.png" alt="Meme 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_2.png" alt="Meme 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_3.png" alt="Meme 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_4.png" alt="Meme 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_5.png" alt="Meme 5" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_6.png" alt="Meme 6" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_7.png" alt="Meme 7" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="glass-panel aspect-square rounded-3xl overflow-hidden group">
-                    <img src="assets/meme_8.png" alt="Meme 8" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-            </div>
-        </section>
-
-        <!-- Community Proof Section -->
-        <section class="py-16 bg-brandGold/5 border-y border-brandGold/10 relative z-10">
-            <div class="container mx-auto px-4">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-black font-heading text-brandGold mb-2">1,200+</div>
-                        <div class="text-xs text-gray-500 font-bold uppercase tracking-widest">HOLDERS</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-black font-heading text-brandRed mb-2">3,500+</div>
-                        <div class="text-xs text-gray-500 font-bold uppercase tracking-widest">TG MEMBERS</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-black font-heading text-brandGreen mb-2">80K</div>
-                        <div class="text-xs text-gray-500 font-bold uppercase tracking-widest">STADIUM FANS</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-black font-heading text-white mb-2">∞</div>
-                        <div class="text-xs text-gray-500 font-bold uppercase tracking-widest">SPANISH PRIDE</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="roadmap" class="py-24 relative container mx-auto px-4 z-10">
-            <div class="text-center max-w-2xl mx-auto mb-20 space-y-4">
-                <span class="text-xs font-extrabold tracking-widest text-brandGold uppercase border border-brandGold/20 px-4 py-1.5 rounded-full bg-brandGold/5 inline-block">The Victory Lap</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-black uppercase tracking-tight">ROADMAP</h2>
-                <p class="text-gray-400 font-light">Our timeline for complete meme takeover. Follow the tournament bracket to victory.</p>
-            </div>
-
-            <div class="max-w-4xl mx-auto relative">
-                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-brandGreen via-brandGold to-brandRed/10 hidden md:block"></div>
-                
-                <div class="space-y-16 relative">
-                    <div class="grid grid-cols-1 md:grid-cols-12 md:gap-8 items-center relative">
-                        <div class="md:col-span-5 md:text-right">
-                            <div class="glass-panel p-8 rounded-3xl border-brandGreen/20 relative space-y-4">
-                                <div class="absolute top-4 right-4 md:right-auto md:left-4 bg-brandGreen/10 text-brandGreen border border-brandGreen/30 text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
-                                    COMPLETED
-                                </div>
-                                <div class="pt-6 font-heading font-extrabold text-2xl text-white">PHASE 1</div>
-                                <h3 class="font-bold text-lg text-brandGreen font-heading">LAUNCH & WINNING BASE</h3>
-                                <p class="text-sm text-gray-400">Launch on Pump.fun, seed liquidity pool, and lock LP. Initiate Telegram and X accounts. Gather first 500 loyal Spanish champion holders.</p>
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 flex justify-center z-10 hidden md:flex">
-                            <div class="w-10 h-10 rounded-full flag-bg p-0.5 glow-green">
-                                <div class="w-full h-full bg-brandBg rounded-full flex items-center justify-center">
-                                    <i data-lucide="check" class="text-brandGreen w-4 h-4"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:col-span-5"></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-12 md:gap-8 items-center relative">
-                        <div class="md:col-span-5"></div>
-                        <div class="md:col-span-2 flex justify-center z-10 hidden md:flex">
-                            <div class="w-10 h-10 rounded-full flag-bg p-0.5 glow-gold">
-                                <div class="w-full h-full bg-brandBg rounded-full flex items-center justify-center animate-pulse">
-                                    <i data-lucide="play" class="text-brandGold w-4 h-4 fill-current"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:col-span-5">
-                            <div class="glass-panel p-8 rounded-3xl border-brandGold/20 relative space-y-4">
-                                <div class="absolute top-4 right-4 bg-brandGold/10 text-brandGold border border-brandGold/30 text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
-                                    IN PROGRESS
-                                </div>
-                                <div class="pt-6 font-heading font-extrabold text-2xl text-white">PHASE 2</div>
-                                <h3 class="font-bold text-lg text-brandGold font-heading">MARKETING BLITZ</h3>
-                                <p class="text-sm text-gray-400">Launch hyper-targeted Spanish sports memes on X and Telegram. Onboard strategic meme coin influencers and list on DexScreener/Coingecko terminals.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-12 md:gap-8 items-center relative">
-                        <div class="md:col-span-5 md:text-right">
-                            <div class="glass-panel p-8 rounded-3xl border-brandRed/20 relative space-y-4">
-                                <div class="absolute top-4 right-4 md:right-auto md:left-4 bg-brandRed/10 text-brandRed border border-brandRed/30 text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
-                                    UPCOMING
-                                </div>
-                                <div class="pt-6 font-heading font-extrabold text-2xl text-white">PHASE 3</div>
-                                <h3 class="font-bold text-lg text-brandRed font-heading">GLOBAL DOMINATION</h3>
-                                <p class="text-sm text-gray-400">Achieve massive market cap milestones. Direct integration with major real-world sports community events and expand into centralized exchange listings.</p>
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 flex justify-center z-10 hidden md:flex">
-                            <div class="w-10 h-10 rounded-full flag-bg p-0.5 glow-red">
-                                <div class="w-full h-full bg-brandBg rounded-full flex items-center justify-center">
-                                    <i data-lucide="lock" class="text-brandRed w-4 h-4"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:col-span-5"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-24 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-brandRed/5 to-transparent"></div>
-            <div class="container mx-auto px-4 relative z-10">
-                <div class="glass-panel rounded-[40px] p-8 md:p-20 text-center border-brandGold/20 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                        <img src="assets/trophy.png" alt="" class="absolute -right-20 -top-20 w-96 rotate-12">
-                        <img src="assets/trophy.png" alt="" class="absolute -left-20 -bottom-20 w-96 -rotate-12">
-                    </div>
-                    
-                    <div class="max-w-3xl mx-auto space-y-8 relative z-10">
-                        <h2 class="text-5xl md:text-7xl font-heading font-black uppercase tracking-tighter leading-none">
-                            JOIN THE <span class="text-brandGold text-glow-gold">SPANISH</span> ARMADA
-                        </h2>
-                        <p class="text-xl text-gray-400 font-light">
-                            Don't watch from the sidelines. Be part of the community that's taking $SWINNER to the World Cup finals.
-                        </p>
-                        
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                            <a href="https://t.me/+msoMKNt4BOpkOWU8" target="_blank" class="w-full sm:w-auto bg-brandGreen text-black font-extrabold font-heading text-lg px-12 py-5 rounded-2xl transition-all hover:scale-105 active:scale-95 glow-green flex items-center justify-center gap-3">
-                                <i data-lucide="send" class="w-6 h-6"></i>
-                                TELEGRAM
-                            </a>
-                            <a href="https://x.com/DarKlinca" target="_blank" class="w-full sm:w-auto bg-white/5 border border-white/10 text-white font-extrabold font-heading text-lg px-12 py-5 rounded-2xl transition-all hover:bg-white/10 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
-                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                                </svg>
-                                FOLLOW ON X
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="glass-panel border-t border-white/5 py-12 relative z-10">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <div class="md:col-span-4 space-y-3">
-                <div class="flex items-center gap-2">
-                    <span class="font-heading font-black text-lg tracking-tighter">
-                        <span class="text-brandRed">WORLD CUP </span><span class="text-brandGold">2026</span>
-                    </span>
-                    <span class="text-[9px] text-brandGreen font-bold tracking-widest uppercase">$SWINNER</span>
-                </div>
-                <p class="text-xs text-gray-500 leading-relaxed">
-                    Tokenizing real championship energy on the blockchain. Ride the wave of Spanish sports triumphs.
-                </p>
-            </div>
-            
-            <div class="md:col-span-4 flex justify-center gap-6 text-sm font-semibold text-gray-400">
-                <a href="#about" class="hover:text-brandGreen transition-colors">ABOUT</a>
-                <a href="#tokenomics" class="hover:text-brandGreen transition-colors">TOKENOMICS</a>
-                <a href="#simulator" class="hover:text-brandGreen transition-colors">SIMULATOR</a>
-                <a href="#roadmap" class="hover:text-brandGreen transition-colors">ROADMAP</a>
-            </div>
-
-            <div class="md:col-span-4 flex flex-col md:items-end space-y-4">
-                <div class="flex gap-4">
-                    <a href="https://x.com/DarKlinca" target="_blank" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brandGreen hover:text-black transition-all">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                    </a>
-                    <a href="https://t.me/+msoMKNt4BOpkOWU8" target="_blank" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brandGreen hover:text-black transition-all">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.54 3.65-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.88-1.69 6.46-2.8 7.74-3.33 3.68-1.53 4.44-1.8 4.94-1.81.11 0 .35.03.5.16.13.11.17.26.18.38-.01.07-.01.17-.02.22z"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="text-[10px] text-gray-500 font-bold tracking-wider uppercase">Built for Champions. &copy; 2026</div>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 mt-8 pt-6 border-t border-white/5 text-[9px] text-gray-600 leading-relaxed text-center">
-            Disclaimer: $SWINNER is a meme coin built strictly for entertainment and cultural purposes. It has no intrinsic value or expectation of financial return. Crypto markets are extremely volatile, do not risk funds you cannot afford to lose.
-        </div>
-    </footer>
-
-    <button onclick="scrollToTop()" id="back-to-top" class="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-xl bg-brandBg border border-white/10 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-brandGreen hover:text-black glow-green active:scale-95">
-        <i data-lucide="arrow-up" class="w-5 h-5"></i>
-    </button>
-
-    <script>
-        lucide.createIcons();
-
-        function copyCA() {
-            const caText = document.getElementById('ca-text').innerText;
-            navigator.clipboard.writeText(caText).then(() => {
-                const btnText = document.getElementById('copy-btn-text');
-                btnText.innerText = 'COPIED!';
-                setTimeout(() => {
-                    btnText.innerText = 'COPY CA';
-                }, 2000);
-            });
-        }
-
-        window.onscroll = function() {
-            const btt = document.getElementById('back-to-top');
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btt.classList.remove('opacity-0', 'pointer-events-none');
-                btt.classList.add('opacity-100');
-            } else {
-                btt.classList.remove('opacity-100');
-                btt.classList.add('opacity-0', 'pointer-events-none');
-            }
-        };
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('menu-icon');
-            const isHidden = menu.classList.contains('hidden');
-            
-            if (isHidden) {
-                menu.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                icon.setAttribute('data-lucide', 'x');
-            } else {
-                menu.classList.add('hidden');
-                document.body.style.overflow = '';
-                icon.setAttribute('data-lucide', 'menu');
-            }
-            lucide.createIcons();
-        }
-
-        let pumpCount = 0;
-        let basePrice = 0.00000239;
-        let points = [
-            {x: 0, y: 130},
-            {x: 50, y: 125},
-            {x: 100, y: 128},
-            {x: 150, y: 110},
-            {x: 200, y: 115},
-            {x: 250, y: 95},
-            {x: 300, y: 102},
-            {x: 350, y: 80},
-            {x: 400, y: 85},
-            {x: 450, y: 55},
-            {x: 500, y: 60}
-        ];
-
-        function drawChart() {
-            const line = document.getElementById('chart-line');
-            const area = document.getElementById('chart-area');
-            let d = '';
-            for (let i = 0; i < points.length; i++) {
-                if (i === 0) {
-                    d += `M ${points[i].x} ${points[i].y}`;
-                } else {
-                    d += ` L ${points[i].x} ${points[i].y}`;
-                }
-            }
-            line.setAttribute('d', d);
-            
-            let areaD = d + ` L 500 150 L 0 150 Z`;
-            area.setAttribute('d', areaD);
-        }
-
-        drawChart();
-
-        const phrases = [
-            'SIUUUUU!', 'VAMOS!', 'CAMPEONES!', 'MUY CALIENTE!', 'TO THE MOON!', 
-            '100x!', 'PUMP IT!', 'EL BICHO!', 'VAMOS RAFA!', 'FIERAS!', 'EUROPA DOMINATED!'
-        ];
-        
-        const colors = ['#00ff89', '#ffd700', '#ff0000'];
-
-        function triggerPump() {
-            pumpCount++;
-            document.getElementById('total-pumps').innerText = pumpCount;
-
-            const increment = (Math.random() * 0.15 + 0.15) * basePrice;
-            basePrice += increment;
-            
-            const priceStr = basePrice.toFixed(8);
-            document.getElementById('sim-price').innerText = `$${priceStr}`;
-            
-            const percentage = ((basePrice - 0.00000239) / 0.00000239 * 100).toFixed(2);
-            document.getElementById('sim-change').innerText = `+${percentage}% (SIUUU!)`;
-
-            const mcapVal = (basePrice * 1000000000);
-            let mcapStr = '';
-            if (mcapVal >= 1000000) {
-                mcapStr = `$${(mcapVal / 1000000).toFixed(2)}M`;
-            } else {
-                mcapStr = `$${(mcapVal / 1000).toFixed(2)}K`;
-            }
-            document.getElementById('sim-mcap').innerText = mcapStr;
-
-            document.getElementById('ticker-price').innerText = `$${priceStr}`;
-            document.getElementById('ticker-price-2').innerText = `$${priceStr}`;
-            document.getElementById('ticker-mcap').innerText = mcapStr;
-            document.getElementById('ticker-mcap-2').innerText = mcapStr;
-            
-            const mockVol = 6 + (pumpCount * 12.5) + (Math.random() * 5);
-            let volStr = `$${mockVol.toFixed(0)}`;
-            if (mockVol >= 1000) {
-                volStr = `$${(mockVol / 1000).toFixed(2)}K`;
-            }
-            document.getElementById('ticker-vol').innerText = volStr;
-            document.getElementById('ticker-vol-2').innerText = volStr;
-
-            let level = 'ROOKIE';
-            let levelColor = 'text-brandRed';
-            if (pumpCount > 50) {
-                level = 'SIUUU GOD!';
-                levelColor = 'text-brandGreen';
-            } else if (pumpCount > 30) {
-                level = 'LEGEND';
-                levelColor = 'text-brandGold';
-            } else if (pumpCount > 15) {
-                level = 'CHAMPION';
-                levelColor = 'text-brandGold';
-            } else if (pumpCount > 5) {
-                level = 'CONTENDER';
-                levelColor = 'text-white';
-            }
-            
-            const pl = document.getElementById('pump-level');
-            pl.innerText = level;
-            pl.className = `text-3xl font-black font-heading mt-1 ${levelColor}`;
-
-            const shift = 5;
-            for (let i = 0; i < points.length - 1; i++) {
-                points[i].y = points[i+1].y;
-            }
-            const lastY = points[points.length - 1].y;
-            const newY = Math.max(10, lastY - (Math.random() * 18 + 2));
-            points[points.length - 1].y = newY;
-            
-            if (newY < 20) {
-                for (let i = 0; i < points.length; i++) {
-                    points[i].y = Math.min(140, points[i].y + 40);
-                }
-            }
-            drawChart();
-
-            spawnMeme();
-            spawnConfetti();
-        }
-
-        function spawnMeme() {
-            const container = document.getElementById('floating-memes');
-            const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            const div = document.createElement('div');
-            div.innerText = phrase;
-            div.style.color = color;
-            div.style.position = 'absolute';
-            div.style.left = `${Math.random() * 60 + 20}%`;
-            div.style.bottom = '10px';
-            div.style.fontSize = `${Math.random() * 12 + 14}px`;
-            div.style.fontWeight = '900';
-            div.style.fontFamily = 'Space Grotesk, sans-serif';
-            div.style.textShadow = '0 0 8px rgba(0,0,0,0.8)';
-            div.style.transition = 'all 2s ease-out';
-            div.style.pointerEvents = 'none';
-            div.style.opacity = '1';
-            
-            container.appendChild(div);
-            
-            setTimeout(() => {
-                div.style.transform = `translateY(-140px) scale(1.1)`;
-                div.style.opacity = '0';
-            }, 50);
-            
-            setTimeout(() => {
-                div.remove();
-            }, 2050);
-        }
-
-        function spawnConfetti() {
-            const btn = document.getElementById('pump-btn');
-            const rect = btn.getBoundingClientRect();
-            const container = document.body;
-            
-            for (let i = 0; i < 24; i++) {
-                const div = document.createElement('div');
-                div.className = 'confetti-piece';
-                div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                const startX = rect.left + rect.width / 2 + window.scrollX;
-                const startY = rect.top + rect.height / 2 + window.scrollY;
-                
-                div.style.left = `${startX}px`;
-                div.style.top = `${startY}px`;
-                
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 80 + 30;
-                const destX = startX + Math.cos(angle) * distance;
-                const destY = startY + Math.sin(angle) * distance - 80;
-                
-                div.style.transition = 'all 1s cubic-bezier(0.25, 1, 0.5, 1)';
-                container.appendChild(div);
-                
-                setTimeout(() => {
-                    div.style.left = `${destX}px`;
-                    div.style.top = `${destY}px`;
-                }, 10);
-                
-                setTimeout(() => {
-                    div.style.transition = 'all 1.5s ease-in';
-                    div.style.top = `${destY + 200}px`;
-                    div.style.opacity = '0';
-                }, 1000);
-                
-                setTimeout(() => {
-                    div.remove();
-                }, 2500);
-            }
-        }
-    </script>
+cambiarEscena('selva', true);
+requestAnimationFrame(bucle);
+</script>
 </body>
 </html>
