@@ -28,6 +28,8 @@
   .sombra { position: absolute; left: 0; top: 0; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, rgba(0,0,0,.4), rgba(0,0,0,0)); }
   .animal { position: absolute; left: 0; top: 0; line-height: 1; cursor: pointer; transform-origin: 50% 100%; will-change: transform; }
   .animal .cuerpo { display: inline-block; transform-origin: 50% 100%; }
+  .animal .cuerpo img { display: block; width: 1.15em; height: 1.15em; margin-bottom: -.1em; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
+  .decor img { display: block; width: 1em; height: 1em; }
   .animal .burbuja { position: absolute; left: 50%; top: -.5em; font-size: .42em; opacity: 0; transform: translateX(-50%) scale(.3); transition: opacity .2s, transform .2s; pointer-events: none; }
   .animal .burbuja.pop { opacity: 1; transform: translateX(-50%) scale(1); animation: pop .4s; }
   @keyframes pop { 0% { transform: translateX(-50%) scale(.2); } 60% { transform: translateX(-50%) scale(1.3); } 100% { transform: translateX(-50%) scale(1); } }
@@ -382,15 +384,16 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'niebla', 'hojas', 'pajaros'],
     animales: [
-      { e: '🐒', n: 'el mono', v: 70, t: 'suelo', g: 'brinca', s: .9, manada: true, emo: ['🍌', '🎵'] },
-      { e: '🦜', n: 'el loro', v: 110, t: 'aire', s: .7 },
-      { e: '🐅', n: 'el tigre', v: 70, t: 'suelo', g: 'anda', s: 1.25 },
-      { e: '🐍', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
-      { e: '🐘', n: 'el elefante', v: 40, t: 'suelo', g: 'anda', s: 1.6, manada: true },
-      { e: '🦥', n: 'el perezoso', v: 14, t: 'suelo', g: 'lento', acc: ['duerme', 'respira'], emo: ['💤'] },
-      { e: '🐸', n: 'la rana', v: 55, t: 'suelo', g: 'brinca', s: .5 },
-      { e: '🦋', n: 'la mariposa', v: 50, t: 'aire', g: 'revolotea', s: .45 },
-      { e: '🐊', n: 'el cocodrilo', v: 32, t: 'suelo', g: 'repta', s: 1.25 }
+      { img: 'monkey', n: 'el mono', v: 70, t: 'suelo', g: 'brinca', s: .9, manada: true, emo: ['🍌', '🎵'] },
+      { img: 'parrot', n: 'el loro', v: 110, t: 'aire', s: .7 },
+      { img: 'tiger', n: 'el tigre', v: 70, t: 'suelo', g: 'anda', s: 1.25 },
+      { img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
+      { img: 'elephant', n: 'el elefante', v: 40, t: 'suelo', g: 'anda', s: 1.6, manada: true },
+      { img: 'gorilla', n: 'el gorila', v: 40, t: 'suelo', g: 'anda', s: 1.3, acc: ['sienta', 'mira', 'rasca'], emo: ['🍌'] },
+      { img: 'orangutan', n: 'el orangután', v: 25, t: 'suelo', g: 'lento', s: 1.1, acc: ['duerme', 'sienta', 'rasca'], emo: ['💤', '🍌'] },
+      { img: 'frog', n: 'la rana', v: 55, t: 'suelo', g: 'brinca', s: .5 },
+      { img: 'butterfly', n: 'la mariposa', v: 50, t: 'aire', g: 'revolotea', s: .45 },
+      { img: 'crocodile', n: 'el cocodrilo', v: 32, t: 'suelo', g: 'repta', s: 1.25, rot: -90 }
     ]
   },
   desierto: {
@@ -411,12 +414,12 @@ const ESCENAS = {
     ],
     efectos: ['calor', 'arena', 'pajaros'],
     animales: [
-      { e: '🐪', n: 'el camello', v: 38, t: 'suelo', g: 'anda', s: 1.5, manada: true },
-      { e: '🦂', n: 'el escorpión', v: 40, t: 'suelo', g: 'repta', s: .55 },
-      { e: '🦎', n: 'el lagarto', v: 90, t: 'suelo', g: 'repta', s: .7 },
-      { e: '🐍', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
-      { e: '🦅', n: 'el águila', v: 120, t: 'aire', s: .9 },
-      { e: '🐫', n: 'el dromedario', v: 38, t: 'suelo', g: 'anda', s: 1.5 }
+      { img: 'two-hump_camel', n: 'el camello', v: 38, t: 'suelo', g: 'anda', s: 1.5, manada: true },
+      { img: 'scorpion', n: 'el escorpión', v: 40, t: 'suelo', g: 'repta', s: .55, rot: 90 },
+      { img: 'lizard', n: 'el lagarto', v: 90, t: 'suelo', g: 'repta', s: .7, rot: -90 },
+      { img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
+      { img: 'eagle', n: 'el águila', v: 120, t: 'aire', s: .9 },
+      { img: 'camel', n: 'el dromedario', v: 38, t: 'suelo', g: 'anda', s: 1.5 }
     ]
   },
   sabana: {
@@ -437,13 +440,14 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'motas', 'pajaros'],
     animales: [
-      { e: '🦁', n: 'el león', v: 60, t: 'suelo', g: 'anda', s: 1.25, acc: ['sienta', 'mira', 'respira'] },
-      { e: '🦒', n: 'la jirafa', v: 42, t: 'suelo', g: 'anda', s: 1.9, manada: true, acc: ['come', 'mira'] },
-      { e: '🦓', n: 'la cebra', v: 85, t: 'suelo', g: 'trota', s: 1.25, manada: true },
-      { e: '🐘', n: 'el elefante', v: 38, t: 'suelo', g: 'anda', s: 1.7, manada: true },
-      { e: '🦛', n: 'el hipopótamo', v: 32, t: 'suelo', g: 'anda', s: 1.4 },
-      { e: '🐆', n: 'el leopardo', v: 110, t: 'suelo', g: 'trota', s: 1.1 },
-      { e: '🦏', n: 'el rinoceronte', v: 48, t: 'suelo', g: 'anda', s: 1.5 }
+      { img: 'giraffe', n: 'la jirafa', v: 42, t: 'suelo', g: 'anda', s: 1.9, manada: true, acc: ['come', 'mira'] },
+      { img: 'zebra', n: 'la cebra', v: 85, t: 'suelo', g: 'trota', s: 1.25, manada: true, der: true },
+      { img: 'elephant', n: 'el elefante', v: 38, t: 'suelo', g: 'anda', s: 1.7, manada: true },
+      { img: 'hippopotamus', n: 'el hipopótamo', v: 32, t: 'suelo', g: 'anda', s: 1.4 },
+      { img: 'leopard', n: 'el leopardo', v: 110, t: 'suelo', g: 'trota', s: 1.1 },
+      { img: 'rhinoceros', n: 'el rinoceronte', v: 48, t: 'suelo', g: 'anda', s: 1.5 },
+      { img: 'flamingo', n: 'el flamenco', v: 40, t: 'suelo', g: 'anda', s: 1.2, manada: true, acc: ['come', 'mira', 'respira'] },
+      { img: 'water_buffalo', n: 'el búfalo', v: 45, t: 'suelo', g: 'anda', s: 1.5, manada: true, acc: ['come', 'mira'] }
     ]
   },
   polo: {
@@ -460,15 +464,14 @@ const ESCENAS = {
       ['pino', 2, [.95, 1.05], [.45, .55], 'bordes', { color: '#2e5e4e', nieve: true }],
       ['hielo', 5, [0, 1], [.04, .08], 'todo', {}],
       ['roca', 3, [.2, 1], [.03, .05], 'todo', { color: '#90a4ae' }],
-      ['emoji', 1, [.7, .8], [.09, .09], [.12, .2], { e: '⛄' }]
+      ['emoji', 1, [.7, .8], [.09, .09], [.12, .2], { img: 'snowman_without_snow' }]
     ],
     efectos: ['estrellas', 'aurora', 'nieve'],
     animales: [
-      { e: '🐧', n: 'el pingüino', v: 32, t: 'suelo', g: 'contonea', s: .9, manada: true },
-      { e: '🐻‍❄️', n: 'el oso polar', v: 42, t: 'suelo', g: 'anda', s: 1.4, acc: ['sienta', 'mira', 'duerme'], emo: ['💤', '🐟'] },
-      { e: '🦭', n: 'la foca', v: 28, t: 'suelo', g: 'repta', s: 1.1 },
-      { e: '🦌', n: 'el reno', v: 70, t: 'suelo', g: 'trota', s: 1.3, manada: true },
-      { e: '🦉', n: 'el búho nival', v: 90, t: 'aire', s: .8 }
+      { img: 'penguin', n: 'el pingüino', v: 32, t: 'suelo', g: 'contonea', s: .9, manada: true },
+      { img: 'seal', n: 'la foca', v: 28, t: 'suelo', g: 'repta', s: 1.1, emo: ['🐟', '💤'] },
+      { img: 'deer', n: 'el reno', v: 70, t: 'suelo', g: 'trota', s: 1.3, manada: true },
+      { img: 'owl', n: 'el búho nival', v: 90, t: 'aire', s: .8 }
     ]
   },
   mar: {
@@ -487,21 +490,21 @@ const ESCENAS = {
       ['alga', 10, [0, 1.05], [.18, .4], 'todo', {}],
       ['alga', 2, [.95, 1.05], [.5, .6], 'bordes', { color: '#1f7a45' }],
       ['roca', 5, [0, 1], [.05, .09], 'todo', { color: '#6d7f8f' }],
-      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { e: '🐚' }],
-      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { e: '⭐' }]
+      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { img: 'spiral_shell' }],
+      ['emoji', 3, [.4, 1], [.05, .05], 'todo', { img: 'star' }]
     ],
     efectos: ['superficie', 'rayos', 'plancton', 'burbujas'],
     animales: [
-      { e: '🐠', n: 'el pez', v: 80, t: 'agua', s: .7, manada: true },
-      { e: '🐙', n: 'el pulpo', v: 30, t: 'agua', g: 'pulsa' },
-      { e: '🐢', n: 'la tortuga', v: 30, t: 'agua', s: 1.1 },
-      { e: '🦈', n: 'el tiburón', v: 70, t: 'agua', s: 1.5 },
-      { e: '🐬', n: 'el delfín', v: 110, t: 'agua', s: 1.3, manada: true },
-      { e: '🦀', n: 'el cangrejo', v: 40, t: 'suelo', g: 'repta', s: .55 },
-      { e: '🐳', n: 'la ballena', v: 25, t: 'agua', s: 2.4 },
-      { e: '🪼', n: 'la medusa', v: 15, t: 'agua', g: 'pulsa', s: .8 },
-      { e: '🐡', n: 'el pez globo', v: 40, t: 'agua', s: .8 },
-      { e: '🦑', n: 'el calamar', v: 45, t: 'agua', g: 'pulsa', s: .9 }
+      { img: 'tropical_fish', n: 'el pez', v: 80, t: 'agua', s: .7, manada: true },
+      { img: 'octopus', n: 'el pulpo', v: 30, t: 'agua', g: 'pulsa' },
+      { img: 'turtle', n: 'la tortuga', v: 30, t: 'agua', s: 1.1 },
+      { img: 'shark', n: 'el tiburón', v: 70, t: 'agua', s: 1.5 },
+      { img: 'dolphin', n: 'el delfín', v: 110, t: 'agua', s: 1.3, manada: true },
+      { img: 'crab', n: 'el cangrejo', v: 40, t: 'suelo', g: 'repta', s: .55 },
+      { img: 'spouting_whale', n: 'la ballena', v: 25, t: 'agua', s: 2.4 },
+      { img: 'jellyfish', n: 'la medusa', v: 15, t: 'agua', g: 'pulsa', s: .8 },
+      { img: 'blowfish', n: 'el pez globo', v: 40, t: 'agua', s: .8 },
+      { img: 'squid', n: 'el calamar', v: 45, t: 'agua', g: 'pulsa', s: .9 }
     ]
   },
   bosque: {
@@ -526,15 +529,16 @@ const ESCENAS = {
     ],
     efectos: ['rayos', 'hojas', 'luciernagas'],
     animales: [
-      { e: '🦊', n: 'el zorro', v: 75, t: 'suelo', g: 'trota' },
-      { e: '🐻', n: 'el oso', v: 42, t: 'suelo', g: 'anda', s: 1.5, acc: ['sienta', 'come', 'duerme'], emo: ['🍯', '💤'] },
-      { e: '🦉', n: 'el búho', v: 80, t: 'aire', s: .8 },
-      { e: '🐿️', n: 'la ardilla', v: 90, t: 'suelo', g: 'brinca', s: .6, emo: ['🌰'] },
-      { e: '🦌', n: 'el ciervo', v: 70, t: 'suelo', g: 'trota', s: 1.4, manada: true },
-      { e: '🐇', n: 'el conejo', v: 80, t: 'suelo', g: 'brinca', s: .65, emo: ['🥕'] },
-      { e: '🦔', n: 'el erizo', v: 26, t: 'suelo', g: 'lento', s: .55 },
-      { e: '🐺', n: 'el lobo', v: 75, t: 'suelo', g: 'trota', s: 1.15 },
-      { e: '🐗', n: 'el jabalí', v: 55, t: 'suelo', g: 'anda', s: 1.1 }
+      { img: 'owl', n: 'el búho', v: 80, t: 'aire', s: .8 },
+      { img: 'chipmunk', n: 'la ardilla', v: 90, t: 'suelo', g: 'brinca', s: .6, emo: ['🌰'] },
+      { img: 'deer', n: 'el ciervo', v: 70, t: 'suelo', g: 'trota', s: 1.4, manada: true },
+      { img: 'rabbit', n: 'el conejo', v: 80, t: 'suelo', g: 'brinca', s: .65, emo: ['🥕'], der: true },
+      { img: 'hedgehog', n: 'el erizo', v: 26, t: 'suelo', g: 'lento', s: .55 },
+      { img: 'boar', n: 'el jabalí', v: 55, t: 'suelo', g: 'anda', s: 1.1 },
+      { img: 'badger', n: 'el tejón', v: 50, t: 'suelo', g: 'anda', s: .9 },
+      { img: 'skunk', n: 'la mofeta', v: 45, t: 'suelo', g: 'anda', s: .8 },
+      { img: 'beaver', n: 'el castor', v: 30, t: 'suelo', g: 'lento', s: .9, acc: ['come', 'sienta', 'mira'] },
+      { img: 'bison', n: 'el bisonte', v: 40, t: 'suelo', g: 'anda', s: 1.5, manada: true, acc: ['come', 'mira'] }
     ]
   },
   granja: {
@@ -556,15 +560,17 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'pajaros', 'motas'],
     animales: [
-      { e: '🐄', n: 'la vaca', v: 32, t: 'suelo', g: 'anda', s: 1.4, acc: ['come', 'respira', 'mira'] },
-      { e: '🐖', n: 'el cerdo', v: 42, t: 'suelo', g: 'anda' },
-      { e: '🐑', n: 'la oveja', v: 38, t: 'suelo', g: 'anda', manada: true, acc: ['come', 'mira'] },
-      { e: '🐓', n: 'el gallo', v: 55, t: 'suelo', g: 'contonea', s: .7, emo: ['🎵'] },
-      { e: '🐎', n: 'el caballo', v: 90, t: 'suelo', g: 'trota', s: 1.5 },
-      { e: '🦆', n: 'el pato', v: 45, t: 'suelo', g: 'contonea', s: .7, manada: true },
-      { e: '🐐', n: 'la cabra', v: 52, t: 'suelo', g: 'brinca' },
-      { e: '🐕', n: 'el perro', v: 85, t: 'suelo', g: 'trota', s: .95, emo: ['🦴', '❤️'] },
-      { e: '🐈', n: 'el gato', v: 50, t: 'suelo', g: 'anda', s: .8, acc: ['sienta', 'duerme', 'mira'] }
+      { img: 'cow', n: 'la vaca', v: 32, t: 'suelo', g: 'anda', s: 1.4, acc: ['come', 'respira', 'mira'] },
+      { img: 'pig', n: 'el cerdo', v: 42, t: 'suelo', g: 'anda' },
+      { img: 'ewe', n: 'la oveja', v: 38, t: 'suelo', g: 'anda', manada: true, acc: ['come', 'mira'] },
+      { img: 'rooster', n: 'el gallo', v: 55, t: 'suelo', g: 'contonea', s: .7, emo: ['🎵'] },
+      { img: 'horse', n: 'el caballo', v: 90, t: 'suelo', g: 'trota', s: 1.5 },
+      { img: 'duck', n: 'el pato', v: 45, t: 'suelo', g: 'contonea', s: .7, manada: true },
+      { img: 'goat', n: 'la cabra', v: 52, t: 'suelo', g: 'brinca' },
+      { img: 'dog', n: 'el perro', v: 85, t: 'suelo', g: 'trota', s: .95, emo: ['🦴', '❤️'] },
+      { img: 'cat', n: 'el gato', v: 50, t: 'suelo', g: 'anda', s: .8, acc: ['sienta', 'duerme', 'mira'] },
+      { img: 'turkey', n: 'el pavo', v: 40, t: 'suelo', g: 'contonea', s: .9 },
+      { img: 'mouse', n: 'el ratón', v: 70, t: 'suelo', g: 'trota', s: .45, emo: ['🧀'] }
     ]
   }
 };
@@ -650,7 +656,7 @@ function construirDecor() {
       else x = -.03 + r() * 1.06;
       const o = { x, d: dr[0] + r() * (dr[1] - dr[0]), s: sr[0] + r() * (sr[1] - sr[0]), flip: r() < .5, el: document.createElement('div') };
       o.el.className = 'decor';
-      if (tipo === 'emoji') { o.emoji = true; o.el.textContent = op.e; }
+      if (tipo === 'emoji') { o.emoji = true; o.el.innerHTML = `<img src="img/${op.img}_3d.png" alt="">`; }
       else { const [w, h, svg] = ARTE[tipo](r, op || {}); o.w = w; o.h = h; o.el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%">${svg}</svg>`; }
       escenaEl.appendChild(o.el); decor.push(o);
     }
@@ -880,7 +886,7 @@ function crearAnimal(dentro, T, extra = {}) {
   T = T || elegir(escena.animales);
   const el = document.createElement('div');
   el.className = 'animal';
-  el.innerHTML = `<span class="burbuja"></span><span class="cuerpo">${T.e}</span><span class="nombre">${T.n}</span>`;
+  el.innerHTML = `<span class="burbuja"></span><span class="cuerpo"><img src="img/${T.img}_3d.png" alt="${T.n}" draggable="false"${T.rot ? ` style="transform:rotate(${T.rot}deg)"` : ''}></span><span class="nombre">${T.n}</span>`;
   const sombra = document.createElement('div'); sombra.className = 'sombra';
   if (T.t !== 'suelo') sombra.style.display = 'none';
   const dir = extra.dir || (Math.random() < .5 ? 1 : -1);
@@ -1057,7 +1063,8 @@ function moverAnimal(a, dt, t, nervioso, confiados) {
   // --- dibujar ---
   const px = a.x + cam * (.4 + .6 * a.d);
   a.el.style.transform = `translate(${f1(px)}px, ${f1(y + bob * esc)}px) translate(-50%, -100%) scale(${esc.toFixed(3)}) rotate(${f1(rot)}deg)`;
-  a.cuerpo.style.transform = `scale(${(-a.cara * sx).toFixed(3)}, ${sy.toFixed(3)}) skewY(${f1(skew)}deg)`;
+  // las imágenes miran a la izquierda (salvo las marcadas con der): se giran según hacia dónde van
+  a.cuerpo.style.transform = `scale(${(-a.cara * sx * (T.der ? -1 : 1)).toFixed(3)}, ${sy.toFixed(3)}) skewY(${f1(skew)}deg)`;
   a.el.style.zIndex = 10 + Math.round(a.d * 100);
   const fb = Math.round(a.d * 10);
   if (fb !== a.filtro) { a.filtro = fb; a.el.style.filter = bruma(fb / 10); }
