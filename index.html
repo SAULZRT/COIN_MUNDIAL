@@ -12,7 +12,7 @@
   #escena { position: fixed; inset: 0; overflow: hidden; }
   .capa { position: absolute; top: 0; left: -60px; pointer-events: none; will-change: transform; }
   .capa svg { display: block; }
-  canvas { position: absolute; inset: 0; pointer-events: none; }
+  #escena > canvas { position: absolute; inset: 0; pointer-events: none; }
   #cvFondo { z-index: 2; }
   #cvFrente { z-index: 300; }
   #vineta { position: absolute; inset: 0; z-index: 310; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0,0,0,.28)); }
@@ -30,6 +30,7 @@
   .animal .cuerpo { display: inline-block; transform-origin: 50% 100%; }
   .animal .cuerpo img { display: block; width: 1.15em; height: 1.15em; margin-bottom: -.1em; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
   .decor img { display: block; width: 1em; height: 1em; }
+  .animal .cuerpo canvas.m3d { display: block; width: 2.1em; height: 2.1em; margin-bottom: calc(var(--pie, .1) * -2.1em); pointer-events: none; }
   .animal .burbuja { position: absolute; left: 50%; top: -.5em; font-size: .42em; opacity: 0; transform: translateX(-50%) scale(.3); transition: opacity .2s, transform .2s; pointer-events: none; }
   .animal .burbuja.pop { opacity: 1; transform: translateX(-50%) scale(1); animation: pop .4s; }
   @keyframes pop { 0% { transform: translateX(-50%) scale(.2); } 60% { transform: translateX(-50%) scale(1.3); } 100% { transform: translateX(-50%) scale(1); } }
@@ -60,7 +61,17 @@
   #ajustes { display: flex; flex-direction: column; align-items: center; font-size: 12px; color: #555; }
   #ajustes input { width: 90px; }
 
+  #btnCreditos { position: fixed; right: 12px; bottom: 14px; z-index: 1000; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255,255,255,.85); font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+  #creditos { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; padding: 16px; }
+  #creditos.abierto { display: flex; }
+  #creditos > div { background: #fff; color: #333; border-radius: 16px; max-width: 640px; width: 100%; max-height: 80vh; overflow: auto; padding: 18px 22px; font: 14px/1.5 "Trebuchet MS", sans-serif; }
+  #creditos h2 { margin: 0 0 8px; font-size: 20px; }
+  #creditos ul { padding-left: 18px; margin: 6px 0 12px; }
+  #creditos a { color: #1565c0; }
+  #creditos button { float: right; border: 0; background: #eee; border-radius: 10px; padding: 6px 12px; cursor: pointer; font: inherit; }
+
   @media (max-width: 700px) {
+    #btnCreditos { bottom: auto; top: 58px; right: 6px; width: 32px; height: 32px; font-size: 16px; }
     #entornos { gap: 4px; padding: 0 4px; flex-wrap: nowrap; }
     #entornos button { font-size: 0; padding: 5px 6px; border-radius: 12px; }
     #entornos button span { font-size: 24px; }
@@ -90,6 +101,15 @@
   <button id="btnPalmada">👏 ¡Ruido!</button>
   <label id="ajustes">Sensibilidad<input id="sens" type="range" min="1" max="10" value="5"></label>
 </div>
+<button id="btnCreditos" title="Créditos">ℹ️</button>
+<div id="creditos"><div>
+  <button id="cerrarCreditos">Cerrar ✕</button>
+  <h2>Créditos</h2>
+  <p>Modelos 3D de animales (de <a href="https://poly.pizza" target="_blank" rel="noopener">Poly Pizza</a>):</p>
+  <ul id="listaCreditos"><li>Cargando…</li></ul>
+  <p>Motor 3D: <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> (licencia MIT).<br>
+  Imágenes de respaldo: <a href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noopener">Fluent Emoji</a> de Microsoft (licencia MIT).</p>
+</div></div>
 
 <script>
 // =====================================================================
@@ -384,16 +404,17 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'niebla', 'hojas', 'pajaros'],
     animales: [
-      { img: 'monkey', n: 'el mono', v: 70, t: 'suelo', g: 'brinca', s: .9, manada: true, emo: ['🍌', '🎵'] },
-      { img: 'parrot', n: 'el loro', v: 110, t: 'aire', s: .7 },
-      { img: 'tiger', n: 'el tigre', v: 70, t: 'suelo', g: 'anda', s: 1.25 },
-      { img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
-      { img: 'elephant', n: 'el elefante', v: 40, t: 'suelo', g: 'anda', s: 1.6, manada: true },
-      { img: 'gorilla', n: 'el gorila', v: 40, t: 'suelo', g: 'anda', s: 1.3, acc: ['sienta', 'mira', 'rasca'], emo: ['🍌'] },
-      { img: 'orangutan', n: 'el orangután', v: 25, t: 'suelo', g: 'lento', s: 1.1, acc: ['duerme', 'sienta', 'rasca'], emo: ['💤', '🍌'] },
-      { img: 'frog', n: 'la rana', v: 55, t: 'suelo', g: 'brinca', s: .5 },
-      { img: 'butterfly', n: 'la mariposa', v: 50, t: 'aire', g: 'revolotea', s: .45 },
-      { img: 'crocodile', n: 'el cocodrilo', v: 32, t: 'suelo', g: 'repta', s: 1.25, rot: -90 }
+      { m: 'mono.glb', img: 'monkey', n: 'el mono', v: 60, t: 'suelo', g: 'brinca', s: .7, manada: true, emo: ['🍌', '🎵'] },
+      { m: 'loro.glb', img: 'parrot', n: 'el loro', v: 45, t: 'suelo', g: 'brinca', s: .45 },
+      { m: 'tucan.glb', n: 'el tucán', v: 45, t: 'suelo', g: 'brinca', s: .42 },
+      { m: 'tigre.glb', img: 'tiger', n: 'el tigre', v: 65, t: 'suelo', g: 'anda', s: 1.2 },
+      { m: 'jaguar.glb', n: 'el jaguar', v: 80, t: 'suelo', g: 'trota', s: 1.05 },
+      { m: 'serpiente.glb', img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .8 },
+      { m: 'elefante.glb', img: 'elephant', n: 'el elefante', v: 38, t: 'suelo', g: 'anda', s: 1.6, manada: true },
+      { m: 'gorila.glb', img: 'gorilla', n: 'el gorila', v: 38, t: 'suelo', g: 'anda', s: 1.1, acc: ['sienta', 'mira', 'rasca'], emo: ['🍌'] },
+      { m: 'rana.glb', img: 'frog', n: 'la rana', v: 50, t: 'suelo', g: 'brinca', s: .35 },
+      { m: 'mariposa.glb', img: 'butterfly', n: 'la mariposa', v: 50, t: 'aire', g: 'revolotea', s: .35 },
+      { m: 'cocodrilo.glb', img: 'crocodile', rot: -90, n: 'el cocodrilo', v: 30, t: 'suelo', g: 'repta', s: 1.3 }
     ]
   },
   desierto: {
@@ -414,12 +435,14 @@ const ESCENAS = {
     ],
     efectos: ['calor', 'arena', 'pajaros'],
     animales: [
-      { img: 'two-hump_camel', n: 'el camello', v: 38, t: 'suelo', g: 'anda', s: 1.5, manada: true },
-      { img: 'scorpion', n: 'el escorpión', v: 40, t: 'suelo', g: 'repta', s: .55, rot: 90 },
-      { img: 'lizard', n: 'el lagarto', v: 90, t: 'suelo', g: 'repta', s: .7, rot: -90 },
-      { img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .9 },
-      { img: 'eagle', n: 'el águila', v: 120, t: 'aire', s: .9 },
-      { img: 'camel', n: 'el dromedario', v: 38, t: 'suelo', g: 'anda', s: 1.5 }
+      { m: 'camello.glb', img: 'two-hump_camel', n: 'el camello', v: 36, t: 'suelo', g: 'anda', s: 1.4, manada: true },
+      { m: 'dromedario.glb', img: 'camel', n: 'el dromedario', v: 36, t: 'suelo', g: 'anda', s: 1.4 },
+      { m: 'escorpion.glb', img: 'scorpion', rot: 90, n: 'el escorpión', v: 35, t: 'suelo', g: 'repta', s: .45 },
+      { m: 'lagarto.glb', img: 'lizard', rot: -90, n: 'el lagarto', v: 80, t: 'suelo', g: 'repta', s: .55 },
+      { m: 'serpiente.glb', img: 'snake', n: 'la serpiente', v: 40, t: 'suelo', g: 'repta', s: .8 },
+      { m: 'aguila.glb', img: 'eagle', n: 'el águila', v: 35, t: 'suelo', g: 'anda', s: .55 },
+      { m: 'buitre.glb', n: 'el buitre', v: 30, t: 'suelo', g: 'anda', s: .55 },
+      { m: 'liebre.glb', n: 'la liebre', v: 85, t: 'suelo', g: 'brinca', s: .45, emo: ['🥕'] }
     ]
   },
   sabana: {
@@ -440,14 +463,16 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'motas', 'pajaros'],
     animales: [
-      { img: 'giraffe', n: 'la jirafa', v: 42, t: 'suelo', g: 'anda', s: 1.9, manada: true, acc: ['come', 'mira'] },
-      { img: 'zebra', n: 'la cebra', v: 85, t: 'suelo', g: 'trota', s: 1.25, manada: true, der: true },
-      { img: 'elephant', n: 'el elefante', v: 38, t: 'suelo', g: 'anda', s: 1.7, manada: true },
-      { img: 'hippopotamus', n: 'el hipopótamo', v: 32, t: 'suelo', g: 'anda', s: 1.4 },
-      { img: 'leopard', n: 'el leopardo', v: 110, t: 'suelo', g: 'trota', s: 1.1 },
-      { img: 'rhinoceros', n: 'el rinoceronte', v: 48, t: 'suelo', g: 'anda', s: 1.5 },
-      { img: 'flamingo', n: 'el flamenco', v: 40, t: 'suelo', g: 'anda', s: 1.2, manada: true, acc: ['come', 'mira', 'respira'] },
-      { img: 'water_buffalo', n: 'el búfalo', v: 45, t: 'suelo', g: 'anda', s: 1.5, manada: true, acc: ['come', 'mira'] }
+      { m: 'leon.glb', n: 'el león', v: 55, t: 'suelo', g: 'anda', s: 1.2, acc: ['sienta', 'mira', 'respira'] },
+      { m: 'jirafa.glb', img: 'giraffe', n: 'la jirafa', v: 40, t: 'suelo', g: 'anda', s: 2.1, manada: true, acc: ['come', 'mira'] },
+      { m: 'cebra.glb', img: 'zebra', der: true, n: 'la cebra', v: 70, t: 'suelo', g: 'trota', s: 1.25, manada: true },
+      { m: 'elefante.glb', img: 'elephant', n: 'el elefante', v: 36, t: 'suelo', g: 'anda', s: 1.7, manada: true },
+      { m: 'hipopotamo.glb', img: 'hippopotamus', n: 'el hipopótamo', v: 30, t: 'suelo', g: 'anda', s: 1.35 },
+      { m: 'rinoceronte.glb', img: 'rhinoceros', n: 'el rinoceronte', v: 45, t: 'suelo', g: 'anda', s: 1.45 },
+      { m: 'guepardo.glb', img: 'leopard', n: 'el guepardo', v: 110, t: 'suelo', g: 'trota', s: 1.05 },
+      { m: 'avestruz.glb', n: 'el avestruz', v: 70, t: 'suelo', g: 'trota', s: 1.3, giro: 180 },
+      { m: 'flamenco.glb', img: 'flamingo', n: 'el flamenco', v: 35, t: 'suelo', g: 'anda', s: .9, giro: 90, manada: true, acc: ['come', 'mira', 'respira'] },
+      { m: 'hiena.glb', n: 'la hiena', v: 70, t: 'suelo', g: 'trota', s: .9 }
     ]
   },
   polo: {
@@ -468,10 +493,12 @@ const ESCENAS = {
     ],
     efectos: ['estrellas', 'aurora', 'nieve'],
     animales: [
-      { img: 'penguin', n: 'el pingüino', v: 32, t: 'suelo', g: 'contonea', s: .9, manada: true },
-      { img: 'seal', n: 'la foca', v: 28, t: 'suelo', g: 'repta', s: 1.1, emo: ['🐟', '💤'] },
-      { img: 'deer', n: 'el reno', v: 70, t: 'suelo', g: 'trota', s: 1.3, manada: true },
-      { img: 'owl', n: 'el búho nival', v: 90, t: 'aire', s: .8 }
+      { m: 'pinguino.glb', img: 'penguin', n: 'el pingüino', v: 30, t: 'suelo', g: 'contonea', s: .75, manada: true },
+      { m: 'osopolar.glb', blanco: true, n: 'el oso polar', v: 40, t: 'suelo', g: 'anda', s: 1.4, acc: ['sienta', 'mira', 'duerme'], emo: ['💤', '🐟'] },
+      { m: 'foca.glb', img: 'seal', n: 'la foca', v: 26, t: 'suelo', g: 'repta', s: 1, emo: ['🐟', '💤'] },
+      { m: 'morsa.glb', n: 'la morsa', v: 22, t: 'suelo', g: 'repta', s: 1.2 },
+      { m: 'reno.glb', img: 'deer', n: 'el reno', v: 60, t: 'suelo', g: 'trota', s: 1.3, manada: true },
+      { m: 'buho.glb', img: 'owl', n: 'el búho', v: 80, t: 'aire', s: .7 }
     ]
   },
   mar: {
@@ -495,16 +522,19 @@ const ESCENAS = {
     ],
     efectos: ['superficie', 'rayos', 'plancton', 'burbujas'],
     animales: [
-      { img: 'tropical_fish', n: 'el pez', v: 80, t: 'agua', s: .7, manada: true },
-      { img: 'octopus', n: 'el pulpo', v: 30, t: 'agua', g: 'pulsa' },
-      { img: 'turtle', n: 'la tortuga', v: 30, t: 'agua', s: 1.1 },
-      { img: 'shark', n: 'el tiburón', v: 70, t: 'agua', s: 1.5 },
-      { img: 'dolphin', n: 'el delfín', v: 110, t: 'agua', s: 1.3, manada: true },
-      { img: 'crab', n: 'el cangrejo', v: 40, t: 'suelo', g: 'repta', s: .55 },
-      { img: 'spouting_whale', n: 'la ballena', v: 25, t: 'agua', s: 2.4 },
-      { img: 'jellyfish', n: 'la medusa', v: 15, t: 'agua', g: 'pulsa', s: .8 },
-      { img: 'blowfish', n: 'el pez globo', v: 40, t: 'agua', s: .8 },
-      { img: 'squid', n: 'el calamar', v: 45, t: 'agua', g: 'pulsa', s: .9 }
+      { m: 'pezpayaso.glb', img: 'tropical_fish', n: 'el pez payaso', v: 70, t: 'agua', s: .5, manada: true },
+      { m: 'pezcirujano.glb', n: 'el pez cirujano', v: 75, t: 'agua', s: .5, manada: true },
+      { m: 'pezmariposa.glb', n: 'el pez mariposa', v: 65, t: 'agua', s: .5, manada: true },
+      { m: 'pezleon.glb', n: 'el pez león', v: 40, t: 'agua', s: .6 },
+      { m: 'pezglobo.glb', img: 'blowfish', n: 'el pez globo', v: 35, t: 'agua', s: .55 },
+      { m: 'pulpo.glb', img: 'octopus', n: 'el pulpo', v: 30, t: 'agua', g: 'pulsa', s: .8 },
+      { m: 'tortuga.glb', img: 'turtle', n: 'la tortuga', v: 30, t: 'agua', s: 1 },
+      { m: 'tiburon.glb', img: 'shark', n: 'el tiburón', v: 65, t: 'agua', s: 1.6 },
+      { m: 'delfin.glb', img: 'dolphin', n: 'el delfín', v: 100, t: 'agua', s: 1.4, giro: 180, manada: true },
+      { m: 'cangrejo.glb', img: 'crab', n: 'el cangrejo', v: 35, t: 'suelo', g: 'repta', s: .5 },
+      { m: 'ballena.glb', img: 'spouting_whale', n: 'la ballena', v: 25, t: 'agua', s: 2.6 },
+      { m: 'medusa.glb', img: 'jellyfish', n: 'la medusa', v: 15, t: 'agua', g: 'pulsa', s: .65 },
+      { m: 'calamar.glb', img: 'squid', n: 'el calamar', v: 40, t: 'agua', g: 'pulsa', s: .75 }
     ]
   },
   bosque: {
@@ -529,16 +559,17 @@ const ESCENAS = {
     ],
     efectos: ['rayos', 'hojas', 'luciernagas'],
     animales: [
-      { img: 'owl', n: 'el búho', v: 80, t: 'aire', s: .8 },
-      { img: 'chipmunk', n: 'la ardilla', v: 90, t: 'suelo', g: 'brinca', s: .6, emo: ['🌰'] },
-      { img: 'deer', n: 'el ciervo', v: 70, t: 'suelo', g: 'trota', s: 1.4, manada: true },
-      { img: 'rabbit', n: 'el conejo', v: 80, t: 'suelo', g: 'brinca', s: .65, emo: ['🥕'], der: true },
-      { img: 'hedgehog', n: 'el erizo', v: 26, t: 'suelo', g: 'lento', s: .55 },
-      { img: 'boar', n: 'el jabalí', v: 55, t: 'suelo', g: 'anda', s: 1.1 },
-      { img: 'badger', n: 'el tejón', v: 50, t: 'suelo', g: 'anda', s: .9 },
-      { img: 'skunk', n: 'la mofeta', v: 45, t: 'suelo', g: 'anda', s: .8 },
-      { img: 'beaver', n: 'el castor', v: 30, t: 'suelo', g: 'lento', s: .9, acc: ['come', 'sienta', 'mira'] },
-      { img: 'bison', n: 'el bisonte', v: 40, t: 'suelo', g: 'anda', s: 1.5, manada: true, acc: ['come', 'mira'] }
+      { m: 'oso.glb', n: 'el oso pardo', v: 40, t: 'suelo', g: 'anda', s: 1.35, acc: ['sienta', 'come', 'duerme'], emo: ['🍯', '💤'] },
+      { m: 'osonegro.glb', n: 'el oso negro', v: 40, t: 'suelo', g: 'anda', s: 1.2, acc: ['sienta', 'come', 'mira'], emo: ['🍯'] },
+      { m: 'zorro.glb', n: 'el zorro', v: 70, t: 'suelo', g: 'trota', s: .8 },
+      { m: 'lobo.glb', n: 'el lobo', v: 70, t: 'suelo', g: 'trota', s: 1 },
+      { m: 'ciervo.glb', img: 'deer', n: 'el ciervo', v: 60, t: 'suelo', g: 'trota', s: 1.3, manada: true },
+      { m: 'mapache.glb', n: 'el mapache', v: 50, t: 'suelo', g: 'anda', s: .6 },
+      { m: 'ardilla.glb', img: 'chipmunk', n: 'la ardilla', v: 85, t: 'suelo', g: 'brinca', s: .38, emo: ['🌰'] },
+      { m: 'liebre.glb', n: 'el conejo', v: 75, t: 'suelo', g: 'brinca', s: .45, emo: ['🥕'] },
+      { m: 'erizo.glb', img: 'hedgehog', n: 'el erizo', v: 24, t: 'suelo', g: 'lento', s: .35 },
+      { m: 'jabali.glb', img: 'boar', n: 'el jabalí', v: 50, t: 'suelo', g: 'anda', s: .95 },
+      { m: 'buho.glb', img: 'owl', n: 'el búho', v: 75, t: 'aire', s: .7 }
     ]
   },
   granja: {
@@ -560,17 +591,17 @@ const ESCENAS = {
     ],
     efectos: ['nubes', 'pajaros', 'motas'],
     animales: [
-      { img: 'cow', n: 'la vaca', v: 32, t: 'suelo', g: 'anda', s: 1.4, acc: ['come', 'respira', 'mira'] },
-      { img: 'pig', n: 'el cerdo', v: 42, t: 'suelo', g: 'anda' },
-      { img: 'ewe', n: 'la oveja', v: 38, t: 'suelo', g: 'anda', manada: true, acc: ['come', 'mira'] },
-      { img: 'rooster', n: 'el gallo', v: 55, t: 'suelo', g: 'contonea', s: .7, emo: ['🎵'] },
-      { img: 'horse', n: 'el caballo', v: 90, t: 'suelo', g: 'trota', s: 1.5 },
-      { img: 'duck', n: 'el pato', v: 45, t: 'suelo', g: 'contonea', s: .7, manada: true },
-      { img: 'goat', n: 'la cabra', v: 52, t: 'suelo', g: 'brinca' },
-      { img: 'dog', n: 'el perro', v: 85, t: 'suelo', g: 'trota', s: .95, emo: ['🦴', '❤️'] },
-      { img: 'cat', n: 'el gato', v: 50, t: 'suelo', g: 'anda', s: .8, acc: ['sienta', 'duerme', 'mira'] },
-      { img: 'turkey', n: 'el pavo', v: 40, t: 'suelo', g: 'contonea', s: .9 },
-      { img: 'mouse', n: 'el ratón', v: 70, t: 'suelo', g: 'trota', s: .45, emo: ['🧀'] }
+      { m: 'vaca.glb', img: 'cow', n: 'la vaca', v: 30, t: 'suelo', g: 'anda', s: 1.3, acc: ['come', 'respira', 'mira'] },
+      { m: 'toro.glb', n: 'el toro', v: 35, t: 'suelo', g: 'anda', s: 1.35, acc: ['come', 'mira'] },
+      { m: 'caballo.glb', img: 'horse', n: 'el caballo', v: 80, t: 'suelo', g: 'trota', s: 1.4 },
+      { m: 'cerdo.glb', img: 'pig', n: 'el cerdo', v: 38, t: 'suelo', g: 'anda', s: .85 },
+      { m: 'oveja.glb', img: 'ewe', n: 'la oveja', v: 35, t: 'suelo', g: 'anda', s: .8, manada: true, acc: ['come', 'mira'] },
+      { m: 'cabra.glb', img: 'goat', n: 'la cabra', v: 48, t: 'suelo', g: 'brinca', s: .8 },
+      { m: 'perro.glb', img: 'dog', n: 'el perro', v: 75, t: 'suelo', g: 'trota', s: .7, emo: ['🦴', '❤️'] },
+      { m: 'gato.glb', img: 'cat', n: 'el gato', v: 45, t: 'suelo', g: 'anda', s: .5, acc: ['sienta', 'duerme', 'mira'] },
+      { m: 'gallina.glb', n: 'la gallina', v: 40, t: 'suelo', g: 'contonea', s: .4, manada: true, emo: ['🥚'] },
+      { m: 'gallo.glb', img: 'rooster', n: 'el gallo', v: 45, t: 'suelo', g: 'contonea', s: .45, emo: ['🎵'] },
+      { m: 'pato.glb', img: 'duck', n: 'el pato', v: 40, t: 'suelo', g: 'contonea', s: .4, manada: true }
     ]
   }
 };
@@ -690,9 +721,9 @@ function cambiarEscena(clave, inmediato) {
   setTimeout(() => {
     claveEscena = clave; escena = ESCENAS[clave];
     document.querySelectorAll('#entornos button').forEach(b => b.classList.toggle('activo', b.dataset.clave === clave));
-    animales.forEach(a => { a.el.remove(); a.sombra.remove(); }); animales = [];
+    [...animales].forEach(quitar);
     construirFondo(); construirDecor(); iniciarAmbiente();
-    for (let i = 0; i < 3; i++) crearAnimal(true);
+    prepararAnimales();
     hablar(escena.art + ' ' + escena.nombre.toLowerCase());
     velo.style.opacity = 0;
   }, inmediato ? 0 : 400);
@@ -883,10 +914,14 @@ function tamAnimal(a) {
 }
 
 function crearAnimal(dentro, T, extra = {}) {
-  T = T || elegir(escena.animales);
+  T = T || elegir(disponibles());
+  if (!T) return null;
   const el = document.createElement('div');
   el.className = 'animal';
-  el.innerHTML = `<span class="burbuja"></span><span class="cuerpo"><img src="img/${T.img}_3d.png" alt="${T.n}" draggable="false"${T.rot ? ` style="transform:rotate(${T.rot}deg)"` : ''}></span><span class="nombre">${T.n}</span>`;
+  el.innerHTML = `<span class="burbuja"></span><span class="cuerpo"></span><span class="nombre">${T.n}</span>`;
+  const inst = window.M3D && T.m ? M3D.instancia(T) : null;   // modelo 3D
+  if (inst) el.querySelector('.cuerpo').appendChild(inst.cv);
+  else el.querySelector('.cuerpo').innerHTML = `<img src="img/${T.img}_3d.png" alt="${T.n}" draggable="false"${T.rot ? ` style="transform:rotate(${T.rot}deg)"` : ''}>`;
   const sombra = document.createElement('div'); sombra.className = 'sombra';
   if (T.t !== 'suelo') sombra.style.display = 'none';
   const dir = extra.dir || (Math.random() < .5 ? 1 : -1);
@@ -897,6 +932,7 @@ function crearAnimal(dentro, T, extra = {}) {
     vel: extra.vel || T.v * azar(.85, 1.15), estado: 'pasea', tDec: azar(2, 5), fase: Math.random() * 10,
     sem: Math.random() * 100, umbral: azar(.42, .85), salto: 0, saltoAmp: 40, accion: null, tAcc: 0, filtro: -1, tPolvo: 0
   };
+  a.inst = inst;
   a.vx = dentro ? 0 : a.dir * a.vel;
   a.dObj = a.d;
   el.addEventListener('pointerdown', ev => { ev.stopPropagation(); tocarAnimal(a); });
@@ -906,8 +942,27 @@ function crearAnimal(dentro, T, extra = {}) {
   return a;
 }
 
+// Animales que ya se pueden mostrar: con su modelo 3D cargado (o con imagen plana si no hay WebGL)
+function disponibles() {
+  if (window.M3D === undefined) return [];
+  return escena.animales.filter(T => window.M3D ? M3D.listo(T) : T.img);
+}
+let cargando = false;
+function prepararAnimales() {
+  if (!escena || window.M3D === undefined) return;     // el motor 3D aún no ha arrancado
+  const clave = claveEscena;
+  const empezar = () => {
+    if (clave !== claveEscena) return;
+    cargando = false;
+    if (!animales.length) for (let i = 0; i < 3; i++) crearAnimal(true);
+  };
+  if (window.M3D) { cargando = true; M3D.precargar(escena.animales).then(empezar); } else empezar();
+}
+window.addEventListener('m3d', prepararAnimales);
+
 function aparecer() {
-  const T = elegir(escena.animales);
+  const T = elegir(disponibles());
+  if (!T) return;
   const a = crearAnimal(false, T);
   if (T.manada && Math.random() < .65) {
     const n = 1 + Math.floor(Math.random() * 2);
@@ -915,7 +970,7 @@ function aparecer() {
   }
 }
 
-function quitar(a) { a.el.remove(); a.sombra.remove(); animales.splice(animales.indexOf(a), 1); }
+function quitar(a) { a.el.remove(); a.sombra.remove(); if (a.inst) M3D.borrar(a.inst); animales.splice(animales.indexOf(a), 1); }
 
 function bocadillo(a, txt, seg = 1.8) {
   a.burbuja.textContent = txt;
@@ -1058,13 +1113,24 @@ function moverAnimal(a, dt, t, nervioso, confiados) {
     else { a.fase += dt * (3 + sp * 9); skew = Math.sin(a.fase) * 5 * (.4 + m); rot = -limitar(subir * 40, -15, 15) * lado + Math.cos(t * 1.1 + a.sem) * 3; }
   }
 
+  // Modelos 3D con animaciones propias: las patas ya se mueven solas, así que no hace falta botar ni inclinar
+  if (a.inst && a.inst.animado) { bob = 0; sx = 1; sy = 1; skew = 0; if (tipo === 'suelo') rot = 0; }
   if (a.salto > 0) { bob -= Math.sin(a.salto * Math.PI) * a.saltoAmp; a.salto = Math.max(0, a.salto - dt * 2.4); }
+
+  if (a.inst) {
+    let modo = 'andar', ritmo = .6 + sp * .8;
+    if (a.estado === 'huye' || a.estado === 'sobresalto') { modo = 'correr'; ritmo = 1.3; }
+    else if (sp < .08 && tipo === 'suelo') { modo = a.accion === 'come' && a.inst.acc.comer ? 'comer' : 'quieto'; ritmo = 1; }
+    M3D.pintar(a.inst, { cara: a.cara, modo, ritmo, dt });
+  }
 
   // --- dibujar ---
   const px = a.x + cam * (.4 + .6 * a.d);
   a.el.style.transform = `translate(${f1(px)}px, ${f1(y + bob * esc)}px) translate(-50%, -100%) scale(${esc.toFixed(3)}) rotate(${f1(rot)}deg)`;
   // las imágenes miran a la izquierda (salvo las marcadas con der): se giran según hacia dónde van
-  a.cuerpo.style.transform = `scale(${(-a.cara * sx * (T.der ? -1 : 1)).toFixed(3)}, ${sy.toFixed(3)}) skewY(${f1(skew)}deg)`;
+  // el modelo 3D gira solo; las imágenes planas se voltean
+  const voltear = a.inst ? 1 : -a.cara * (T.der ? -1 : 1);
+  a.cuerpo.style.transform = `scale(${(voltear * sx).toFixed(3)}, ${sy.toFixed(3)}) skewY(${f1(skew)}deg)`;
   a.el.style.zIndex = 10 + Math.round(a.d * 100);
   const fb = Math.round(a.d * 10);
   if (fb !== a.filtro) { a.filtro = fb; a.el.style.filter = bruma(fb / 10); }
@@ -1103,7 +1169,8 @@ function bucle(ahora) {
   const confiados = ahora - calmaDesde > 6000;
 
   let msg;
-  if (evacuando) msg = '😱 ¡Un grito! Se están yendo todos...';
+  if (cargando) msg = '⏳ Cargando animales...';
+  else if (evacuando) msg = '😱 ¡Un grito! Se están yendo todos...';
   else if (ahora < asustadosHasta) msg = '😱 ¡Se han escondido todos!';
   else if (ahora < sustoParcialHasta) msg = '🙉 ¡Uy! Algunos se han ido...';
   else if (nervioso) msg = '👀 Shhh... están nerviosos';
@@ -1168,8 +1235,158 @@ function hablar(texto) {
   speechSynthesis.speak(u);
 }
 
+// =====================================================================
+//  CRÉDITOS (las licencias CC-BY obligan a citar a los autores)
+// =====================================================================
+$('btnCreditos').onclick = async () => {
+  $('creditos').classList.add('abierto');
+  try {
+    const lista = await (await fetch('modelos/creditos.json')).json();
+    const lic = l => l === 'CC0' ? 'dominio público (CC0)' : '<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY</a>';
+    const nombre = {};
+    for (const e of Object.values(ESCENAS)) for (const T of e.animales) if (T.m) nombre[T.m] ??= T.n;
+    $('listaCreditos').innerHTML = lista.map(c => `<li>${nombre[c.archivo] || c.archivo}: «<a href="${c.url}" target="_blank" rel="noopener">${c.modelo}</a>» de ${c.autor}, ${lic(c.licencia)}</li>`).join('');
+  } catch (e) { $('listaCreditos').innerHTML = '<li>No se han podido cargar los créditos.</li>'; }
+};
+$('cerrarCreditos').onclick = () => $('creditos').classList.remove('abierto');
+$('creditos').onclick = e => { if (e.target === $('creditos')) $('creditos').classList.remove('abierto'); };
+
 cambiarEscena('selva', true);
 requestAnimationFrame(bucle);
+</script>
+
+<!-- =====================================================================
+     MOTOR 3D: modelos glTF de animales dibujados con three.js.
+     Un solo renderizador WebGL pinta cada animal en su propio lienzo,
+     así cada animal sigue siendo un elemento con su profundidad (z-index).
+     ===================================================================== -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from './lib/jsm/loaders/GLTFLoader.js';
+import { clone as clonar } from './lib/jsm/utils/SkeletonUtils.js';
+import { MeshoptDecoder } from './lib/jsm/libs/meshopt_decoder.module.js';
+
+const TAM = 320;
+let R = null;
+try { R = new THREE.WebGLRenderer({ alpha: true, antialias: true }); } catch (e) { R = null; }
+
+if (!R) {
+  window.M3D = null;   // sin WebGL: se usan las imágenes planas
+} else {
+  R.setPixelRatio(1); R.setSize(TAM, TAM, false);
+  const esc = new THREE.Scene();
+  esc.add(new THREE.HemisphereLight(0xfff6e8, 0x6b7355, 2.1));
+  const sol = new THREE.DirectionalLight(0xffffff, 2.4); sol.position.set(-1.5, 3, 2.5); esc.add(sol);
+  const rel = new THREE.DirectionalLight(0xcfe3ff, .8); rel.position.set(2, 1.5, -2); esc.add(rel);
+  const cam = new THREE.PerspectiveCamera(24, 1, .05, 20);
+  cam.position.set(0, .9, 2.9); cam.lookAt(0, .48, 0);
+  // qué parte del lienzo queda por debajo de las patas (para apoyarlas en el suelo)
+  const p = new THREE.Vector3(0, 0, 0).project(cam);
+  document.documentElement.style.setProperty('--pie', ((p.y + 1) / 2).toFixed(3));
+
+  const cargador = new GLTFLoader(); cargador.setMeshoptDecoder(MeshoptDecoder);
+  const promesas = new Map(), listos = new Map(), instancias = new Set();
+
+  // Convierte un animal en blanco (por ejemplo, un oso pardo en oso polar), dejando oscuros los ojos y el hocico
+  const crema = (l, out) => { if (l < .14) return false; const v = .8 + .2 * Math.min(1, l * 2); out[0] = .965 * v; out[1] = .95 * v; out[2] = .91 * v; return true; };
+  function blanquear(raiz) {
+    const c = [0, 0, 0];
+    raiz.traverse(o => {
+      if (!o.isMesh) return;
+      const col = o.geometry.attributes.color;
+      if (col) { o.geometry = o.geometry.clone(); const a = o.geometry.attributes.color;
+        for (let k = 0; k < a.count; k++) { const l = .3 * a.getX(k) + .59 * a.getY(k) + .11 * a.getZ(k); if (crema(l, c)) a.setXYZ(k, c[0], c[1], c[2]); } }
+      const mats = (Array.isArray(o.material) ? o.material : [o.material]).map(m0 => {
+        const m = m0.clone();
+        if (m.map && m.map.image) {
+          const img = m.map.image, cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+          const x = cv.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, cv.width, cv.height), p = d.data;
+          for (let k = 0; k < p.length; k += 4) { const l = (.3 * p[k] + .59 * p[k + 1] + .11 * p[k + 2]) / 255; if (crema(l, c)) { p[k] = c[0] * 255; p[k + 1] = c[1] * 255; p[k + 2] = c[2] * 255; } }
+          x.putImageData(d, 0, 0);
+          const t = new THREE.CanvasTexture(cv); t.flipY = m.map.flipY; t.colorSpace = m.map.colorSpace; t.wrapS = m.map.wrapS; t.wrapT = m.map.wrapT; m.map = t;
+        } else if (m.color && !col) { const l = .3 * m.color.r + .59 * m.color.g + .11 * m.color.b; if (crema(Math.sqrt(l), c)) m.color.setRGB(c[0], c[1], c[2]); }
+        return m;
+      });
+      o.material = mats.length === 1 ? mats[0] : mats;
+    });
+  }
+
+  function preparar(g, T) {
+    const raiz = g.scene;
+    if (T.blanco) blanquear(raiz);
+    raiz.rotation.y = (T.giro || 0) * Math.PI / 180;
+    const cont = new THREE.Group(); cont.add(raiz);
+    // Se mide con los vértices tal y como se ven (con esqueleto y formas animadas aplicados):
+    // las cajas que calcula three.js son demasiado grandes en esos modelos.
+    const medir = () => {
+      cont.updateMatrixWorld(true);
+      const b = new THREE.Box3(), v = new THREE.Vector3();
+      raiz.traverse(o => {
+        if (!o.isMesh) return;
+        const n = o.geometry.attributes.position.count, paso = Math.max(1, Math.floor(n / 4000));
+        for (let k = 0; k < n; k += paso) { o.getVertexPosition(k, v); b.expandByPoint(v.applyMatrix4(o.matrixWorld)); }
+      });
+      return b;
+    };
+    const s = medir().getSize(new THREE.Vector3());
+    raiz.scale.multiplyScalar(1 / Math.max(s.x, s.y, s.z));
+    const b = medir(), c = b.getCenter(new THREE.Vector3());
+    // los que andan se apoyan en el suelo; los que vuelan o nadan se centran (al batir alas o aletas se mueven)
+    raiz.position.set(-c.x, T.t === 'suelo' ? -b.min.y : .5 - c.y, -c.z);
+    raiz.traverse(o => { if (o.isMesh) o.frustumCulled = false; });
+    return { cont, clips: g.animations };
+  }
+  function cargar(T) {
+    if (!promesas.has(T.m)) promesas.set(T.m, cargador.loadAsync('modelos/' + T.m)
+      .then(g => { const r = preparar(g, T); listos.set(T.m, r); return r; })
+      .catch(e => { console.warn('No se pudo cargar', T.m, e); return null; }));
+    return promesas.get(T.m);
+  }
+  function instancia(T) {
+    const base = listos.get(T.m); if (!base) return null;
+    const obj = clonar(base.cont), piv = new THREE.Group(); piv.add(obj); esc.add(piv);
+    const cv = document.createElement('canvas'); cv.width = cv.height = TAM; cv.className = 'm3d';
+    const i = { T, piv, cv, ctx: cv.getContext('2d'), mixer: null, acc: {}, actual: null };
+    if (base.clips.length) {
+      i.mixer = new THREE.AnimationMixer(obj);
+      const busca = re => base.clips.find(c => re.test(c.name));
+      const clips = { quieto: busca(/idle(?!.*hit)/i), andar: busca(/walk|swim(?!.*fast)|fly|crawl/i), correr: busca(/gallop|run|fast/i), comer: busca(/eat/i) };
+      for (const [k, c] of Object.entries(clips)) if (c) i.acc[k] = i.mixer.clipAction(c);
+      // si el modelo no sabe andar (solo trae "quieto"), se queda respirando y el movimiento lo pone la web
+      i.animado = !!(clips.andar || clips.correr);
+      if (!i.animado) (i.acc.quieto || i.mixer.clipAction(base.clips[0])).play();
+      i.acc.andar ||= i.acc.correr || i.mixer.clipAction(base.clips[0]);
+      i.acc.correr ||= i.acc.andar; i.acc.quieto ||= i.acc.andar;
+    }
+    i.animado = !!i.animado;
+    instancias.add(i);
+    return i;
+  }
+  // o: { cara (-1 izquierda … 1 derecha), modo (quieto/andar/correr/comer), ritmo, dt }
+  function pintar(i, o) {
+    if (i.mixer) {
+      if (i.animado) {
+        const a = i.acc[o.modo] || i.acc.andar;
+        if (a !== i.actual) { a.reset().fadeIn(.25).play(); if (i.actual) i.actual.fadeOut(.25); i.actual = a; }
+        a.timeScale = o.ritmo;
+      }
+      i.mixer.update(o.dt);
+    }
+    i.piv.rotation.y = o.cara * 1.2;          // de perfil y un poco hacia la cámara; al girar pasa de frente
+    for (const otra of instancias) otra.piv.visible = otra === i;
+    R.render(esc, cam);
+    i.ctx.clearRect(0, 0, TAM, TAM); i.ctx.drawImage(R.domElement, 0, 0);
+  }
+  function borrar(i) { esc.remove(i.piv); instancias.delete(i); }
+
+  window.M3D = {
+    precargar: lista => Promise.all(lista.filter(T => T.m).map(cargar)),
+    listo: T => !!(T.m && listos.get(T.m)),
+    instancia, pintar, borrar
+  };
+}
+window.dispatchEvent(new Event('m3d'));
 </script>
 </body>
 </html>
